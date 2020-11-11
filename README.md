@@ -1,2 +1,4 @@
-# GAN_beginner
-GAN_beginner
+# GAN_Beginner
+
+
+
