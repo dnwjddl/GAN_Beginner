@@ -56,7 +56,7 @@
 ## 그리기(Style Transfer)
 Style Image가 주어졌을 때 base Image를 변환하는 모델을 훈련
 - Style Image에 내재된 분포를 모델링 하는 것이 아니라 이미지에서 스타일을 결정하는 요소만 추출하여 베이스 이미지에 주입시킨다 <br>
-Style Image와 Base Image를 합쳐서는 안됨
-- Style Image 모델은 두가지<br>
-   * CycleGAN
-   * Neural Style Transpose
+   * Style Image와 Base Image를 합쳐서는 안됨
+- Style Transfer 모델은 두가지<br>
+   * **CycleGAN**
+   * **Neural Style Transpose**
