@@ -57,6 +57,7 @@ VAE와 다른 방식
 
 - **정규화 네가지 방법**
    - 배치 정규화 : 배치 단위로 정규화
+      - feature들의 평균 및 분산 값을 Batch 단위로 계산을 하지만 batch크기가 작아지면 구하는 평균과 분산은 dataset전체에 대표할 수 없다
    - 층 정규화 : 각 채널과 영상전체를 normalize
    - 샘플 정규화 : 각 채널 단위로 normalize
    - 그룹 정규화 : 각 채널을 N개 단위로 group화하여 normalize
