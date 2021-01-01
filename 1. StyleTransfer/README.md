@@ -66,4 +66,44 @@ VAE와 다른 방식
 ![image](https://user-images.githubusercontent.com/72767245/103438684-bb792f80-4c78-11eb-8681-78ce9ca525c6.png)
 ###### N: 배치 축, C: 채널 축, (H, W): 공간 축
 
+```python
+def build_generator_unet(self):
+   def downsample(layer_input, filters, f_size = 4):
+      d = Conv2D(filters, kernel_size = f_size, strides = 2, padding = 'same')(layer_input)
+      d = InstanceNormalization(axis = -1, center = False, scale = False)(d)
+      d = Activation('relu')(d)
+      return d
+   
+   def upsample(layer_input, skip_input, filters, f_size = 4, dropout_rate = 0):
+      u = UpSampling2D(size = 2)(layer_input)
+      u = Conv2D(filters, kernel_size = f_size, strides = 1, padding = 'same')(u)
+      u = InstanceNormalization(axis = -1, center = False, scale = False)(u)
+      u = Activation('relu')(u)
+      if dropout_rate:
+         u = Dropout(dropout_rate)(u)
+      u = Concatenate()([u, skip_input])
+      return u
+   
+   #이미지 입력
+   img = Input(shape = self.img_shape)
+   
+   #다운샘플링
+   d1 = downsample(img, self.gen_n_filters)
+   d2 = downsample(d1, self.gen_n_filters*2)
+   d3 = downsample(d2, self.gen_n_filters*4)
+   d4 = downsample(d3, self.gen_n_filters*8)   
+   
+   #업샘플링
+   u1 = upsample(d4, d3, self.gen_n_filters*4)
+   u2 = upsample(u1, d2, self.gen_n_filters*2)
+   u3 = upsample(u2, d1, self.gen_n_filters)
+   u4 = UpSampling2D(size = 2)(u3)
+   
+   output = Conv2D(self.channels, kernel_size = 4, stride = 1, padding = 'same', activation = 'tanh')(u4)
+   
+   return Model(img, output)
+
+```
+
+
 ### ResNet (CycleGAN에서는 이를 생성자 모델로 사용)
