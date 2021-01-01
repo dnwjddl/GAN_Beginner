@@ -23,9 +23,19 @@ Loss Function: L1 loss + GAN loss 사용
 - d_A : 도메인A의 진짜 이미지와 g_BA의 비교
 - d_B : 도메인B의 진짜 이미지와 g_AB의 비교
 
+![image](https://user-images.githubusercontent.com/72767245/103436168-17818b00-4c5c-11eb-85fa-d16989def2b0.png)
+
+
 ## 생성자 모델
 #### U-Net (pix2pix에서는 이를 생성자 모델로 사용)
 VAE와 비슷한 방식
-- down sampling
-- up sampling
+- down sampling : 입력 이미지를 공간방향으로 압축, 채널방향으로 확장
+- up sampling : 공간방향으로 표현을 확장, 채널방향으로는 압축
+
+VAE와 다른 방식
+- U-Net은 down sampling과 up sampling 사이에 skip connection이 존재함
+- down sampling은 각 층 모델의 이미지가 점차 무엇인지 감지하는 반면, 위치 정보는 잃음
+- up sampling에서 down sampling내 잃었던 공간정보를 되돌림
+####### image segmentation이나 style transfer는 upsampling이 중요하다
+
 #### ResNet (CycleGAN에서는 이를 생성자 모델로 사용)
