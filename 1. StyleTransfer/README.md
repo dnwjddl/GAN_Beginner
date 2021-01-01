@@ -66,7 +66,7 @@ VAE와 다른 방식
 ![image](https://user-images.githubusercontent.com/72767245/103438684-bb792f80-4c78-11eb-8681-78ce9ca525c6.png)
 ###### N: 배치 축, C: 채널 축, (H, W): 공간 축 
 <br>
-U-Net 생성자 만들기
+U-Net 생성자 만들기<br>
 
 ```python
 def build_generator_unet(self):
