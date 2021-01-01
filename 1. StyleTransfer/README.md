@@ -33,7 +33,7 @@ VAE와 비슷한 방식
 - up sampling : 공간방향으로 표현을 확장, 채널방향으로는 압축
 
 VAE와 다른 방식
-- U-Net은 down sampling과 up sampling 사이에 skip connection이 존재함
+- U-Net은 down sampling과 up sampling 사이에 **skip connection**이 존재함
 - down sampling은 각 층 모델의 이미지가 점차 무엇인지 감지하는 반면, 위치 정보는 잃음
 - up sampling에서 down sampling내 잃었던 공간정보를 되돌림 <br>
 (image segmentation이나 style transfer는 upsampling이 중요)
