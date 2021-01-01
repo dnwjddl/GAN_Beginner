@@ -77,13 +77,13 @@ def build_generator_unet(self):
       return d
    
    def upsample(layer_input, skip_input, filters, f_size = 4, dropout_rate = 0):
-      u = UpSampling2D(size = 2)(layer_input)
-      u = Conv2D(filters, kernel_size = f_size, strides = 1, padding = 'same')(u)
-      u = InstanceNormalization(axis = -1, center = False, scale = False)(u)
+      u = UpSampling2D(size = 2)(layer_input) #채널의 크기는 불변
+      u = Conv2D(filters, kernel_size = f_size, strides = 1, padding = 'same')(u) #첫번째 업샘플링, 채널 128개로 줄어듦
+      u = InstanceNormalization(axis = -1, center = False, scale = False)(u) 
       u = Activation('relu')(u)
       if dropout_rate:
          u = Dropout(dropout_rate)(u)
-      u = Concatenate()([u, skip_input])
+      u = Concatenate()([u, skip_input]) #첫번째 업샘플링, 채널 256개로 늘어남
       return u
    
    #이미지 입력
@@ -96,10 +96,10 @@ def build_generator_unet(self):
    d4 = downsample(d3, self.gen_n_filters*8)   
    
    #업샘플링
-   u1 = upsample(d4, d3, self.gen_n_filters*4)
-   u2 = upsample(u1, d2, self.gen_n_filters*2)
-   u3 = upsample(u2, d1, self.gen_n_filters)
-   u4 = UpSampling2D(size = 2)(u3)
+   u1 = upsample(d4, d3, self.gen_n_filters*4) #256 -> 128 -> 256
+   u2 = upsample(u1, d2, self.gen_n_filters*2) #128 -> 64 -> 128
+   u3 = upsample(u2, d1, self.gen_n_filters) #64 -> 32 -> 64
+   u4 = UpSampling2D(size = 2)(u3) #3개의 층
    
    output = Conv2D(self.channels, kernel_size = 4, stride = 1, padding = 'same', activation = 'tanh')(u4)
    
@@ -112,10 +112,37 @@ def build_generator_unet(self):
 
 
 ## 판별자
-- 하나의 숫자 출력, 입력이미지가 진짜일 예측 확률
-- CycleGAN의 판별자는 숫자 하나가 아니라 16x16크기의 채널 하나를 가진 텐서를 출력
+- 보통 하나의 숫자 출력, 입력이미지가 진짜일 예측 확률
+- CycleGAN의 판별자는 숫자 하나가 아니라 **16x16크기의 채널 하나를 가진 텐서**를 출력
 <br>
+
 - **Pix2pix**에서는 판별자로 PatchGAN사용
 - **CycleGAN**은 PatchGAN의 판별자 구조를 승계함
    - PatchGAN은 이미지 전체에 대한 예측이 아닌 중첩된 "patch"로 나누어 각 패치에 대한 진위여부 결정
    - 그러므로 하나의 출력값이 아닌 **각 패치에 대한 예측 확률을 담은 텐서**가 출력됨
+      - 네트워크에 이미지를 전달하면 패치들은 한꺼번에 예측 (합성곱 구조로 인해 자동으로 이미지가 패치로 나뉨)
+      
+ **PatchGAN**
+ - 내용이 닌 스타일을 기반으로 판별자가 얼마나 잘 구별하는지 손실함수가 측정 가능
+ - 판별자 예측의 개별 원소는 이미지의 일부 영역을 기반으로 함
+```python
+def build_discriminator(self):
+   def conv4(layer_input, filters, stride = 2, norm = True):
+      y = Conv2D(filters, kernel_size = 4, strides = stride, padding = 'same')(layer_input)
+      
+      if norm:
+         y = InstanceNormalization(axis = -1, center = False, scale = False)(y)
+      
+      y = LeakyReLU(0.2)(y)
+      
+   img = Input(shape = self.img_shape)
+   
+   y = conv4(img, self.disc_n_filters, stride = 2, norm = False)
+   y = conv4(y, self.disc_n_filters*2, stride = 2)
+   y = conv4(y, self.disc_n_filters*4, stride = 2)
+   y = conv4(y, self.disc_n_filters*8, stride = 1)
+   
+   output = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(y)
+   
+   return Model(img, output)
+```
