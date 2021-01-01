@@ -64,5 +64,6 @@ VAE와 다른 방식
       - LN과 IN은 batch 크기에 독립적으로 동작할 수 있고, 특정 모델들에 대해서는 상당히 잘 동작하는 기술이지만 visual recognition 분야에서는 좋은 성능을 보이지 않음
       - Batch 크기가 작은 상황에서 기존의 BN보다 GN이 더 좋은 성능을 보여줌
    ![image](https://user-images.githubusercontent.com/72767245/103438684-bb792f80-4c78-11eb-8681-78ce9ca525c6.png)
+###### N: 배치 축, C: 채널 축, (H, W): 공간 축
 
 ### ResNet (CycleGAN에서는 이를 생성자 모델로 사용)
