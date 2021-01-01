@@ -27,7 +27,7 @@ Loss Function: L1 loss + GAN loss 사용
 
 
 ## 생성자 모델
-#### U-Net (pix2pix에서는 이를 생성자 모델로 사용)
+### U-Net (pix2pix에서는 이를 생성자 모델로 사용)
 VAE와 비슷한 방식
 - down sampling : 입력 이미지를 공간방향으로 압축, 채널방향으로 확장
 - up sampling : 공간방향으로 표현을 확장, 채널방향으로는 압축
@@ -38,4 +38,4 @@ VAE와 다른 방식
 - up sampling에서 down sampling내 잃었던 공간정보를 되돌림
 ####### image segmentation이나 style transfer는 upsampling이 중요하다
 
-#### ResNet (CycleGAN에서는 이를 생성자 모델로 사용)
+### ResNet (CycleGAN에서는 이를 생성자 모델로 사용)
