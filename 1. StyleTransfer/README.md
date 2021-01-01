@@ -48,5 +48,16 @@ VAE와 다른 방식
    - 채널의 차원에서 합쳐지므로 채널의 수가 두배가 됨 (공간방향은 동일하게 유지)
    
 #### InstanceNormalization층
+- BatchNormalization층 대신 사용 Instance Normalization층 <br>
+(StyleTransfer 문제에서 더 만족스러운 결과)
 
+- Instance Normalization층은 배치 단위가 아니라 **개별 샘플을 각각 정규화**
+   - 스케일(gamma)와 이동(beta) 파라미터 불필요 (학습되는 가중치도 없음)
+   - 각 층을 정규화하기 위하여 사용되는 평균과 표준편차는 채널별로 나누어 샘플별로 계산됨
+
+- **정규화 네가지 방법**
+   - 배치 정규화
+   - 층 정규화
+   - 샘플 정규화
+   - 그룹 정규화
 ### ResNet (CycleGAN에서는 이를 생성자 모델로 사용)
