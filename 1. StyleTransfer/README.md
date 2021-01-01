@@ -38,4 +38,7 @@ VAE와 다른 방식
 - up sampling에서 down sampling내 잃었던 공간정보를 되돌림
 ####### image segmentation이나 style transfer는 upsampling이 중요하다
 
+![image](https://user-images.githubusercontent.com/72767245/103436583-88c33d00-4c60-11eb-880a-8fe545b17333.png)
+
+
 ### ResNet (CycleGAN에서는 이를 생성자 모델로 사용)
