@@ -180,8 +180,20 @@ valid_A = self.d_A(fake_A)
 valid_B = self.d_B(fake_B) #유효성
 
 reconstr_A = self.g_BA(fake_B)
-reconstr_B = self.g_AB(fake_A)
+reconstr_B = self.g_AB(fake_A) #재구성
 
+img_A_id = self.g_BA(img_A)
+img_B_id = self.g_AB(img_B) #동일성 (배경, 큰 틀을 유지하기 위해 제약을 둠
 
+self.combined = Model(inputs = [img_A, img_B], outputs = [valid_A, valid_B, reconstr_A, reconstr_B, img_A_id, img_B_id])
 
+self.combined.compile(loss = ['mse','mse', 'mae', 'mae', 'mae', 'mae'], 
+                     loss_weights = [self.lambda_validation,
+                                      self.lambda_validation,
+                                      self.lambda_reconstr,
+                                      self.lambda_reconstr,
+                                      self.lambda_id,
+                                      self.lambda_id ],
+                      optimizer = optimizer)
+                                                   
 ```
