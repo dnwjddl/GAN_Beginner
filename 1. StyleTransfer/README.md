@@ -194,6 +194,12 @@ self.combined.compile(loss = ['mse','mse', 'mae', 'mae', 'mae', 'mae'],
                                       self.lambda_reconstr,
                                       self.lambda_id,
                                       self.lambda_id ],
-                      optimizer = optimizer)
-                                                   
+                      optimizer = optimizer)       
+                              
 ```
+
+
+- 6개의 출력이 만들어짐, 판별자의 가중치를 동결. 따라서 판별자가 모델에 관여하지만 결합된 모델은 ```생성자의 가중치```만 훈련한다
+- 전체 손실은 ```각 조건에 대한 손실의 가중치 합```이다
+- **평균 제곱 오차**는 유효성 조건에 사용, 진짜(1)과 가짜(0) 타깃에 대한 판별자의 출력을 확인
+- **평균 절댓값 오차**는 이미지대 이미지 조건에 사용(재구성과 동일성 조건)
