@@ -40,14 +40,14 @@ VAE와 다른 방식
 
 ![image](https://user-images.githubusercontent.com/72767245/103436583-88c33d00-4c60-11eb-880a-8fe545b17333.png)
 
-#### Skip connection
+#### ```Skip connection```
 - 이 연결은 다운샘플링 과정에서 감지된 고수준 추상 정보(image style)를 네트워크의 앞쪽 층으로부터 전달된 구체적인 공간 정보(image contents)을 섞음
 - **Concatenate** 층
    - 층을 접합하는 역할로 학습되는 가중치는 없음
    - 업샘플링과 동일한 크기의 출력을 내는 다운샘플링층 연결
    - 채널의 차원에서 합쳐지므로 채널의 수가 두배가 됨 (공간방향은 동일하게 유지)
    
-#### InstanceNormalization층
+#### ```InstanceNormalization층```
 - BatchNormalization층 대신 사용 Instance Normalization층 <br>
 (StyleTransfer 문제에서 더 만족스러운 결과)
 
