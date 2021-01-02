@@ -163,6 +163,13 @@ self.d_B.compile(loss = 'mse', optimizer = Adam(self.learning_rate, 0.5), metric
 - 2. **재구성** : 두 생성자를 교대로 적용하면(양방향 모두에서) 원본 이미지를 얻는가?
 - 3. **동일성** : 각 생성자를 자신의 타깃 도메인에 있는 이미지에 적용했을 때 이미지가 바뀌지 않고 그대로 남아 있는가?
 
+생성자 훈련하기 위해 결합된 모델 만들기
+
+- 6개의 출력이 만들어짐, 판별자의 가중치를 동결. 따라서 판별자가 모델에 관여하지만 결합된 모델은 ```생성자의 가중치```만 훈련한다
+- 전체 손실은 ```각 조건에 대한 손실의 가중치 합```이다
+- **평균 제곱 오차**는 유효성 조건에 사용, 진짜(1)과 가짜(0) 타깃에 대한 판별자의 출력을 확인
+- **평균 절댓값 오차**는 이미지대 이미지 조건에 사용(재구성과 동일성 조건)
+
 ```python
 self.g_AB = self.build_generator_unet()
 self.g_BA = self.build_generator_unet()
@@ -198,8 +205,39 @@ self.combined.compile(loss = ['mse','mse', 'mae', 'mae', 'mae', 'mae'],
                               
 ```
 
+## CycleGAN 훈련
 
-- 6개의 출력이 만들어짐, 판별자의 가중치를 동결. 따라서 판별자가 모델에 관여하지만 결합된 모델은 ```생성자의 가중치```만 훈련한다
-- 전체 손실은 ```각 조건에 대한 손실의 가중치 합```이다
-- **평균 제곱 오차**는 유효성 조건에 사용, 진짜(1)과 가짜(0) 타깃에 대한 판별자의 출력을 확인
-- **평균 절댓값 오차**는 이미지대 이미지 조건에 사용(재구성과 동일성 조건)
+
+```python
+batch_size = 1 #일반적으로 CycleGAN의 batch 사이즈는 1임
+patch = int(self.img_rows/2**4)
+self.disc_patch = (patch, patch, 1)
+
+valid = np.ones((batch_size,) + self.disc_patch)  #진짜 이미지들은 타깃이 1
+fake = np.ones((batch_size,) + self.disc_patch)  #가짜 이미지들은 타깃이 0
+
+for epoch in range(self.epoch, epochs):
+   for batch_i, (imgs_A, imgs_B) in enumerate(data_loader.load_batch(batch_size)):
+      #생성자를 사용하여 가짜 이미지 배치 생성
+      fake_B = self.g_AB.predict(imgs_A)
+      fake_A = self.g_BA.predict(imgs_B)
+      
+      #가짜 이미지와 진짜 이미지 배치로 각 판별자를 훈련
+      dA_loss_real = self.d_A.train_on_batch(imgs_A, valid)
+      dA_loss_fake = self.d_A.train_on_batch(fake_A, fake)
+      dA_loss = 0.5 * np.add(dA_loss_real, dA_loss_fake)
+      
+      dB_loss_real = self.d_B.train_on_batch(imgs_B, valid)
+      dB_loss_fake = self.d_B.train_on_batch(fake_B, fake)
+      dB_loss = 0.5 * np.add(dB_loss_real, dB_loss_fake)
+      
+      d_loss = 0.5 * np.add(dA_loss, dB_loss)
+      
+      #생성자는 앞서 컴파일된 결합 모델을 통해 동시에 훈련됨. 6개의 출력은 컴파일 단계에서 정의한 6개의 손실함수에 대응
+      g_loss = self.combined.train_on_batch([imgs_A, imgs_B], [valid, valid, imgs_A, imgs_B, imgs_A, imgs_B])
+```
+
+원본 이미지 ```a``` <br>
+유효성 확인 ```G_AB(a)``` [판별자]0일때 ```D_B(G_AB(a))```, 1일때 ```D_B(b)``` <br>
+재구성 확인 ```G_BA(G_AB(a))``` <br>
+동일성 확인 ```G_BA(a)``` <br>
