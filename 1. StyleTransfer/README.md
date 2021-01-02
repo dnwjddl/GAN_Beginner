@@ -146,3 +146,42 @@ def build_discriminator(self):
    
    return Model(img, output)
 ```
+###### CycleGAN의 판별자는 연속된 합성곱 신경망 (첫번째층 제외하고) 모두 샘플정규화를 사용
+###### 마지막 합성곱 층은 하나의 필터를 사용하고 활성화함수는 사용하지 않음
+
+## CycleGAN 컴파일
+
+```python
+self.d_A = self.build_discriminator()
+self.d_B = self.build_discriminator()
+self.d_A.compile(loss = 'mse', optimizer = Adam(self.learning_rate, 0.5), metrics = ['accuracy'])
+self.d_B.compile(loss = 'mse', optimizer = Adam(self.learning_rate, 0.5), metrics = ['accuracy'])
+```
+
+**세가지 조건으로 생성자를 동시에 평가**
+- 1. **유효성** : 각 생성자에서 만든 이미지가 대응되는 판별자를 속이는가?
+- 2. **재구성** : 두 생성자를 교대로 적용하면(양방향 모두에서) 원본 이미지를 얻는가?
+- 3. **동일성** : 각 생성자를 자신의 타깃 도메인에 있는 이미지에 적용했을 때 이미지가 바뀌지 않고 그대로 남아 있는가?
+
+```python
+self.g_AB = self.build_generator_unet()
+self.g_BA = self.build_generator_unet()
+
+self.d_A.trainable = False #이게 뭐지
+self.d_B.trainable = False
+
+img_A = Input(shape = self.img_shape)
+img_B = Input(shape = self.img_shape)
+
+fake_A = self.g_BA(img_B)
+fake_B = self.g_AB(img_A)
+
+valid_A = self.d_A(fake_A)
+valid_B = self.d_B(fake_B) #유효성
+
+reconstr_A = self.g_BA(fake_B)
+reconstr_B = self.g_AB(fake_A)
+
+
+
+```
