@@ -241,3 +241,24 @@ for epoch in range(self.epoch, epochs):
 유효성 확인 ```G_AB(a)``` [판별자]0일때 ```D_B(G_AB(a))```, 1일때 ```D_B(b)``` <br>
 재구성 확인 ```G_BA(G_AB(a))``` <br>
 동일성 확인 ```G_BA(a)``` <br>
+
+## ResNet
+
+
+```잔차블록(Residual block)```을 쌓아서 구성
+각 블록은 다음층으로 출력을 전달하기 전에 입력과 출력을 합하는 스킵 연결을 가지고 있음
+
+```python
+from keras.layers.merge import add
+
+def residual(layer_input, filters):
+   shortcut = layer_input
+   y = Conv2D(filters, kernel_size = (3,3), strides = 1, padding = 'same')(layer_input)
+   y = InstanceNormalization(axis = -1, center = False, scale =False)(y)
+   y = Activation('relu')(y)
+   
+   y = Conv2D(filters, kernel_size = (3,3), strides = 1, padding = 'same')(y)
+   y = InstanceNormalization(axis = -1, center = False, scale = False)(y)
+   
+   return add([shortcut, y])
+```
