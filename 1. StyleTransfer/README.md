@@ -190,7 +190,7 @@ reconstr_A = self.g_BA(fake_B)
 reconstr_B = self.g_AB(fake_A) #재구성
 
 img_A_id = self.g_BA(img_A)
-img_B_id = self.g_AB(img_B) #동일성 (배경, 큰 틀을 유지하기 위해 제약을 둠
+img_B_id = self.g_AB(img_B) #동일성 (배경, 큰 틀을 유지하기 위해 제약을 둠, 이미지의 변환이 필요한 부분 이외에는 바꾸지 않도록)
 
 self.combined = Model(inputs = [img_A, img_B], outputs = [valid_A, valid_B, reconstr_A, reconstr_B, img_A_id, img_B_id])
 
