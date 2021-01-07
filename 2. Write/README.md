@@ -66,3 +66,23 @@ print(tokenizer.texts_to_sequences(sentences)) #[[1, 5], [1, 8, 5], [1, 3, 5], [
 - 타깃 y : [50416, 4169] 크기의 0,1 이진 배열
 
 ### 3) LSTM Model
+
+```python
+n_units = 256
+embedding_size = 100
+
+text_in = Input(shape = (None,))
+embedding = Embedding(total_words, embedding_size)
+x = embedding(text_in)
+x = LSTM(n_units)(x)
+x = Dropout(0.2)(x)
+text_out = Dense(total_words, activation = 'softmax')(x)
+
+model = Model(text_in, text_out)
+
+opti = RMSprop(lr = 0.001)
+model.compile(loss='categorical_crossentropy', optimizer=opti)
+```
+
+![image](https://user-images.githubusercontent.com/72767245/103923534-9002b300-5158-11eb-8dc0-e6814745c9ea.png)
+
