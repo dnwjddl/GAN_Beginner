@@ -236,7 +236,7 @@ for epoch in range(self.epoch, epochs):
       #생성자는 앞서 컴파일된 결합 모델을 통해 동시에 훈련됨. 6개의 출력은 컴파일 단계에서 정의한 6개의 손실함수에 대응
       g_loss = self.combined.train_on_batch([imgs_A, imgs_B], [valid, valid, imgs_A, imgs_B, imgs_A, imgs_B])
 ```
-
+**순환 일관성 손실함수(Cycle Consistency Loss Function)사용**
 원본 이미지 ```a``` <br>
 유효성 확인 ```G_AB(a)``` [판별자]0일때 ```D_B(G_AB(a))```, 1일때 ```D_B(b)``` <br>
 재구성 확인 ```G_BA(G_AB(a))``` <br>
@@ -272,3 +272,13 @@ def residual(layer_input, filters):
 CycleGAN의 잔차 블록은 skip connection을 합친 후에 적용하는 활성화 함수가 없어서 이전 층의 feature map이 그대로 다음 층으로 전달됨
 
 # Neural Style Transfer
+- 콘텐츠 손실(content loss)
+합성된 이미지는 베이스 이미지의 콘텐츠를 동일하게 포함해야된다
+- 스타일 손실(style loss)
+합성된 이미지는 스타일 이미지와 동일한 일반적인 스타일을 가져야 합니다
+- 총 변위 손실(total variation loss)
+합성된 이미지는 픽셀처럼 격자 문의가 나타나지 않고 부드러워야함
+
+## 콘텐츠 손실
+## 스타일 손실
+## 총 변위 손실
