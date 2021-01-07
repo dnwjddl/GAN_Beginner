@@ -123,7 +123,11 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
 - Output Gate: o_t는 장기상태 c_t의 어느 부분을 읽어서 h_t와 y_t로 출력해야 하는지 제어
 
 <img src="https://user-images.githubusercontent.com/72767245/103927728-2dacb100-515e-11eb-8745-6dc9a1375f40.png" width = 30%>
+
 ### 4) 새로운 텍스트 생성
+- 기존 단어의 시퀀스를 네트워크에 주입하고 다음 단어를 예측
+- 이 단어를 기존 시퀀스에 추가하고 과정을 반복
+
 
 
 # GRU(gated Recurrent Unit)
