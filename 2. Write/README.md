@@ -19,3 +19,34 @@
 |구두점(.)와(,)를 토큰화 or 제거||
 |단어 토큰화를하면 훈련 어휘사전에 없는 단어는 모델이 예측X|어휘사전은 비교적 매우 작음|
 ||마지막 출력 층에 학습할 가중치수가 적기 때문에 모델 훈련 속도에 유리
+
+```python
+#텍스트 정제
+text = text.lower()
+text = start_story + text
+text = text.replace("\n\n\n\n\n", start_story)
+text = text.replace("\n", " ")
+text = re.sub('  +', '. ', text).strip()
+text = text.replace("..",".")
+
+text = re.sub('([!"#$%()*+,-./:;<=>?@[\]^_'{|}~])','r'\1', text)
+text = re.sub('\s{2,}','', text)
+```
+```python
+#토큰화
+tokenizer = Tokenizer(char_level = False, filters = '') #단어토큰화
+tokenizer.fit_on_texts([text])
+total_words = len(tokenizer.word_index) + 1
+token_list = tokenizer.texts_to_sequences([text])[0]
+```
+
+```python
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(sentences) # fit_on_texts()안에 코퍼스를 입력으로 하면 빈도수를 기준으로 단어 집합을 생성한다.
+
+print(tokenizer.word_index) #{'barber': 1, 'secret': 2, 'huge': 3, 'kept': 4, 'person': 5, 'word': 6, 'keeping': 7, 'good': 8, 'knew': 9, 'driving': 10, 'crazy': 11, 'went': 12, 'mountain': 13}
+
+print(tokenizer.word_counts) #OrderedDict([('barber', 8), ('person', 3), ('good', 1), ('huge', 5), ('knew', 1), ('secret', 6), ('kept', 4), ('word', 2), ('keeping', 2), ('driving', 1), ('crazy', 1), ('went', 1), ('mountain', 1)])
+
+print(tokenizer.texts_to_sequences(sentences)) #[[1, 5], [1, 8, 5], [1, 3, 5], [9, 2], [2, 4, 3, 2], [3, 2], [1, 4, 6], [1, 4, 6], [1, 4, 2], [7, 7, 3, 2, 10, 1, 11], [1, 12, 3, 13]]
+```
