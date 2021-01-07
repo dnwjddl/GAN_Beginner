@@ -122,8 +122,7 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
 - Input Gate: i_t에 의해 제어, g_t의 어느 부분이 장기상태 c_t-1에 **더해져야 하는지** 제어(c_t가 됨)
 - Output Gate: o_t는 장기상태 c_t의 어느 부분을 읽어서 h_t와 y_t로 출력해야 하는지 제어
 
-<p align = "center><img src="https://user-images.githubusercontent.com/72767245/103927728-2dacb100-515e-11eb-8745-6dc9a1375f40.png" width = 30%></p>
-
+<img src="https://user-images.githubusercontent.com/72767245/103927728-2dacb100-515e-11eb-8745-6dc9a1375f40.png" width = 30%>
 ### 4) 새로운 텍스트 생성
 
 
