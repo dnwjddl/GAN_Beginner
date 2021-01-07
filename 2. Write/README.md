@@ -3,11 +3,12 @@
 
 # RNN(처음)
 - 순환층은 매우 간단
-- tanh() 하나로 구성(time step사이에 정보를 -1~1사이로 scale 맞춤
+- tanh() (or sigmoid) 하나로 구성(time step사이에 정보를 -1~1사이로 scale 맞춤
   - gradient Vanishing(그레이디언트 소실) : **긴 sequence 가진 데이터에 안 좋음**  
 ***RNN은 격차가 늘수록 학습 정보를 잃어버림***
 
 # LSTM(Long short-term memory)
+- cell state 추가
 ### 1) 텍스트를 정제하고 token화
 ✔ ```Tokenize``` : 텍스트를 단어나 문자와 같은 개별 단위로 나누는 작업  
 
@@ -68,21 +69,43 @@ print(tokenizer.texts_to_sequences(sentences)) #[[1, 5], [1, 8, 5], [1, 3, 5], [
 ### 3) LSTM Model
 
 ```python
+#하이퍼파라미터
 n_units = 256
 embedding_size = 100
 
+#초기화
 text_in = Input(shape = (None,))
 embedding = Embedding(total_words, embedding_size)
+
+#모델 구축
 x = embedding(text_in)
 x = LSTM(n_units)(x)
 x = Dropout(0.2)(x)
 text_out = Dense(total_words, activation = 'softmax')(x)
 
+#모델 객체
 model = Model(text_in, text_out)
 
+#컴파일
 opti = RMSprop(lr = 0.001)
 model.compile(loss='categorical_crossentropy', optimizer=opti)
 ```
 
 ![image](https://user-images.githubusercontent.com/72767245/103923534-9002b300-5158-11eb-8dc0-e6814745c9ea.png)
 
+#### Embedding 층
+- 모델이 역전파를 통해 업데이트가 가능한 단어 표현을 학습할 수 있기 때문에 각 정수 토큰이 **연속적인 벡터로 임베딩**
+- **입력 토큰**을 원-핫 인코딩을 할 수도 있지만 임베딩 층이 더 선호 (y값은 이미 원-핫 인코딩 함)
+- 임베딩 층은 스스로 학습할 수 있기 때문에 성능이 향상시키기 위해 모델이 토큰의 임베딩 방법을 자유롭게 결정할 수 있기 때문
+
+#### LSTM 층
+
+#### LSTM 셀
+
+### 4) 새로운 텍스트 생성
+
+
+# GRU(gated Recurrent Unit)
+**차이점**
+- 삭제 게이트와 입력게이트가 리셋 게이트와 업데이트 게이트로 바뀐다
+- 셀 상태와 출력 게이트가 없다. 셀은 은닉 상태만 출력
