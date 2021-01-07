@@ -262,3 +262,11 @@ def residual(layer_input, filters):
    
    return add([shortcut, y])
 ```
+
+```ResNet```구조는 앞쪽의 층에도 도달하는 그레이디언트가 작아져 매우 느리게 훈련되는 **그레이디언트 소실** 문제가 없다.  
+오차 그레이디언트가 Residual Block의 Skip connection을 통해 네트워크에 그대로 역전파 되기때문  
+층을 추가해도 모델의 정확도를 떨어뜨리지 않음  
+추가적인 특성이 추출되지 않는다면 skip connection으로 인해 언제든지 이전 층의 특성이 identity mapping을 통과하기 때문
+
+```항등 사상(identity mapping)```  
+CycleGAN의 잔차 블록은 skip connection을 합친 후에 적용하는 활성화 함수가 없어서 이전 층의 feature map이 그대로 다음 층으로 전달됨
