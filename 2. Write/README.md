@@ -101,6 +101,10 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
 #### LSTM 층
 
 #### LSTM 셀
+![image](https://user-images.githubusercontent.com/72767245/103927355-95163100-515d-11eb-8270-b70bb9e5e428.png)
+- Forget Gate: f_t에 의해 제어, 장기 상태 c_t의 어느 부분을 삭제할지 제어
+- Input Gate: i_t에 의해 제어, g_t의 어느 부분이 장기상태 c_t에 더해져야 하는지 제어
+- Output Gate: o_t는 장기상태 c_t의 어느 부분을 읽어서 h_t와 y_t로 출력해야 하는지 제어
 
 ### 4) 새로운 텍스트 생성
 
