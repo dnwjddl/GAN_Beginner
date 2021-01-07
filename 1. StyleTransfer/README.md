@@ -280,5 +280,31 @@ CycleGAN의 잔차 블록은 skip connection을 합친 후에 적용하는 활�
 합성된 이미지는 픽셀처럼 격자 문의가 나타나지 않고 부드러워야함
 
 ## 콘텐츠 손실
+```python
+from keras.applications import vgg19
+from keras import backend as K
+
+base_image_path = '/path_to_images/base_image.jpg'
+style_reference_image_path = '/path_to/images/styled_image.jpg'
+content_weight = 0.01
+
+base_image = K.variable(preprocess_image(base_image_path))
+style_reference_imiage = K.variable(preprocess_image(style_reference_image_path))
+combination_image = K.placeholder((1, img_nrows, img_ncols, 3))
+
+input_tensor = K.concatenate([base_image, style_reference_image, combination_image], axis=0)
+model = vgg19.VGG19(input_tensor = input_tensor, weights='imagenet',include_top=False)
+
+output_dict=dict([(layer.name, layer.output) for layer in model.layers])
+layer_features = outputs_dict['block5_conv2']
+
+base_image_features = layer_features[0,:,:,;]
+combination_features = layer_features[2, :,:,:]
+
+def content_loss(content, gen):
+   return K.sum(K.square(gen-content))
+   
+content_loss= content_weight * content_loss(base_image_features, combination_features)
+```
 ## 스타일 손실
 ## 총 변위 손실
