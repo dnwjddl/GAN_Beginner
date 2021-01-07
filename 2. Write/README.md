@@ -8,7 +8,7 @@
 ***RNN은 격차가 늘수록 학습 정보를 잃어버림***
 
 # LSTM(Long short-term memory)
-## 1) 텍스트를 정제하고 token화
+### 1) 텍스트를 정제하고 token화
 ✔ ```Tokenize``` : 텍스트를 단어나 문자와 같은 개별 단위로 나누는 작업  
 
 |단어 토큰|문자 토큰|
@@ -40,6 +40,10 @@ total_words = len(tokenizer.word_index) + 1
 token_list = tokenizer.texts_to_sequences([text])[0]
 ```
 
+```tokenizer.fit_on_texts```: 단어 dictionary 생성  
+```tokenizer.word_index```:단어 dictionary의 index 추출  
+```tokenizer.texts_to_sequences```: 단어 dictionary에서 생성한 정수 인덱스로 텍스트 대체  
+
 ```python
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(sentences) # fit_on_texts()안에 코퍼스를 입력으로 하면 빈도수를 기준으로 단어 집합을 생성한다.
@@ -50,3 +54,15 @@ print(tokenizer.word_counts) #OrderedDict([('barber', 8), ('person', 3), ('good'
 
 print(tokenizer.texts_to_sequences(sentences)) #[[1, 5], [1, 8, 5], [1, 3, 5], [9, 2], [2, 4, 3, 2], [3, 2], [1, 4, 6], [1, 4, 6], [1, 4, 2], [7, 7, 3, 2, 10, 1, 11], [1, 12, 3, 13]]
 ```
+
+
+### 2) 데이터셋 구축
+- text의 단어들 길이는 50436
+- text내 unique한 단어들의 갯수는 4169개  
+- 길이가 20인 Sequence : 텍스트를 20개의 단어 길이로 나눔
+- 훈련 데이터셋 X : [50416,20] 크기의 배열 (50436-20)
+- 각 시퀀스의 타깃은 다음 단어 **(20벡터의 X가 4169벡터의 y와 대응)**
+- 단어의 길이가 4169인 벡터로 원핫 인코딩 됨
+- 타깃 y : [50416, 4169] 크기의 0,1 이진 배열
+
+### 3) LSTM Model
