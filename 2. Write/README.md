@@ -4,5 +4,5 @@
 # RNN(처음)
 - 순환층은 매우 간단
 - tanh() 하나로 구성(time step사이에 정보를 -1~1사이로 scale 맞춤
-  - gradient Vanishing(그레이디언트 소실) : **긴 sequence 가진 데이터에 안 좋음**
+  - gradient Vanishing(그레이디언트 소실) : **긴 sequence 가진 데이터에 안 좋음**  
 ***RNN은 격차가 늘수록 학습 정보를 잃어버림***
