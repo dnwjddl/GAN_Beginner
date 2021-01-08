@@ -202,3 +202,6 @@ layer = Bidirectional(GRU(100))
 인코더 디코더 네트워크의 이런 훈련 방식을 **Teacher Forcing** 이라 함
   - 예측은 하되 강제로 정답을 예측하게끔 훈련
   
+# 질문-대답 생성기
+- RNN 하나가 text로 부터 대답 후보를 고른다
+- Encoder-Decoder network가 RNN이 선택한 대답 후보 중 하나가 주어졌을 때 적절한 질문을 생성
