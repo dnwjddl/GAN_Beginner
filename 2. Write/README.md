@@ -127,7 +127,9 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
 ### 4) 새로운 텍스트 생성
 - 기존 단어의 시퀀스를 네트워크에 주입하고 다음 단어를 예측
 - 이 단어를 기존 시퀀스에 추가하고 과정을 반복
-
+- 이 네트워크는 **샘플링할 수 있는 각 단어의 확률** 출력
+  - 결정적이지 않고 확률적으로 텍스트 생성
+- temperature 매개변수를 사용하여 샘플링 과정을 얼마나 결정적으로 만들지 지정 가능
 
 
 # GRU(gated Recurrent Unit)
