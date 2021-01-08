@@ -131,6 +131,22 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
   - 결정적이지 않고 확률적으로 텍스트 생성
 - temperature 매개변수를 사용하여 샘플링 과정을 얼마나 결정적으로 만들지 지정 가능
 
+## 적층 순환 네트워크 (LSTM을 여러층)
+- 첫번째 LSTM층의 ```return_sequences```을 True 로 반환, 순환 층이 마지막 타임스텝의 은닉 상태만 출력하지 않고 모든 타임스텝의 은닉 상태를 출력
+- 두번째 LSTM층은 첫번째 은닉 상태를 입력 데이터로 사용
+
+```python
+text_in = Input(shape= (None,))
+embedding = Embedding(total_words, embedding_size)
+
+x = embedding(text_in)
+x = LSTM(n_units, return_sequence = True)(x)
+x = LSTM(n_units)(x)
+x = Dropout(0.2)(x)
+text_out = Dense(total_words, activation= 'softmax')(x)
+
+model = Model(text_in, text_out)
+```
 
 # GRU(gated Recurrent Unit)
 **차이점**
