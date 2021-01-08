@@ -152,3 +152,9 @@ model = Model(text_in, text_out)
 **차이점**
 - 삭제 게이트와 입력게이트가 리셋 게이트와 업데이트 게이트로 바뀐다
 - 셀 상태와 출력 게이트가 없다. 셀은 은닉 상태만 출력
+
+![image](https://user-images.githubusercontent.com/72767245/104047799-9743c280-5225-11eb-83ee-fd8ab2c33958.png)
+
+## workflow
+- Reset Gate: 이전 히든 스테이트 h_(t-1)과 현재 입력 값 x_t를 고려해, 현재 입력 값을 히든 스테이트 h_t에 얼마나 반영할 지 판단
+- Update Gate: 히든 스테이트 h_(t-1)과 입력 값 x_t로부터 z_t값을 생성하고, z_t를 기준으로 Reset Gate로 부터 반환된 값과 이전 hidden state중 어디에 얼만큼 가중치를 둘지 판단
