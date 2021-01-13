@@ -195,6 +195,7 @@ layer = Bidirectional(GRU(100))
 - 각 time step에서 DECODER RNN의 은닉상태는 fully-connected Layer에 연결되어 단어 어휘사전에 대한 확률 분포를 출력
   - 이런식으로 인코더가 생성한 입력 데이터로 디코더를 초기화한 다음 새로운 Text Sequence 생성 가능
 <br>
+
 - **Loss Function** : 각 time step 에서 디코더가 생성한 출력 분포를 진짜 다음 단어와 비교하여 손실을 계산  
   - 훈련 과정에서 디코더가 이 분포로부터 샘플링하여 다음 단어를 생성할 필요는 없음
   - 이전 출력 분포에서 단어를 샘플링하는 대신 그 다음 time step에 진짜 다음 단어 cell이 주입되기 때문
