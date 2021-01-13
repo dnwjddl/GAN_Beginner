@@ -307,4 +307,40 @@ def content_loss(content, gen):
 content_loss= content_weight * content_loss(base_image_features, combination_features)
 ```
 ## 스타일 손실
+
+```python
+style_loss = 0.0
+def gram_matrix(x):
+   features = K.batch_flatten(K.permute_dimensions(x, (2,0,1)))
+   gram = K.dot(features, K.transpose(features))
+   return gram
+   
+def style_loss(style, combination):
+   S = gram_matirx(style)
+   C = gram_matrix(combination)
+   channels = 3
+   size = img_nrows * img_ncols
+   return K.sum(K.square(S - C))/(4.0 * (channels ** 2) * (size**2))
+   
+feature_layers = ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']
+
+for layer_name in feature_layers:
+   layer_features = outputs_dict[layer_name]
+   style_reference_features = layer_features[1, :,:,:]
+   combination_features = layer_features[2,:,:,:]
+   sl = style_loss(style_reference_features, combination_features)
+   style_loss +=(style_weight/len(feature_layers)) * sl
+
+```
 ## 총 변위 손실
+
+```python
+def total_variation_loss(x):
+   a = K.square(
+      x[:, :img_nrows -1, :img_ncols -1, :] -x[:, 1:, :img_ncols-1, :])
+   b = K.square(
+      x[:, :img_nrows -1, :img_ncols -1, :] -x[:, :img_nrows-1, 1:, :])
+   return K.sum(K.pow(a+b, 1.25))
+
+tv_loss = total_variation_weight * total_variation_loss(combination_image)
+loss = content_loss + style_loss + tv_loss
