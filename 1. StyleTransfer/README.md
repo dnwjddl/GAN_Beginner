@@ -344,3 +344,20 @@ def total_variation_loss(x):
 
 tv_loss = total_variation_weight * total_variation_loss(combination_image)
 loss = content_loss + style_loss + tv_loss
+```
+
+# Neural Transfer 실행
+```python
+from scipy.optimize import fmin_l_bfgs_b
+
+iterations = 1000
+x = preprocess_image(base_image_path)
+
+for i in range(iterations):
+   x, min_val, info = fmin_l_bfgs_b(
+      evaluator.loss,
+      x.flatten(),
+      fprime = evaluator.grads(),
+      maxfun = 20
+   )
+```
