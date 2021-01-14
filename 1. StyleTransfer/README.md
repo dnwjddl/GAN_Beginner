@@ -272,6 +272,8 @@ def residual(layer_input, filters):
 CycleGAN의 잔차 블록은 skip connection을 합친 후에 적용하는 활성화 함수가 없어서 이전 층의 feature map이 그대로 다음 층으로 전달됨
 
 # Neural Style Transfer
+훈련세트를 사용하지 않고 이미지의 스타일을 다른 이미지로 전달  
+
 - 콘텐츠 손실(content loss)
 합성된 이미지는 베이스 이미지의 콘텐츠를 동일하게 포함해야된다
 - 스타일 손실(style loss)
