@@ -1,4 +1,5 @@
 # GAN_Beginner 
+DCGAN -> Wasserstein GAN(WGAN) -> Conditional GAN (cGAN) [sGAN, ACGAN] -> 
 
 ![image](https://user-images.githubusercontent.com/72767245/104844851-d228b300-5915-11eb-9dba-658b1013e53f.png)
 
@@ -7,8 +8,6 @@
 |Examples from the classes you want|Examples from random classes|
 |Training datasets needs to be labeled|Training dataset dosen't need to be labeled|
 
-**[미술관에 GAN 딥러닝 실전 프로젝트]을 통해 스터디 진행** <br>
-<img src="https://user-images.githubusercontent.com/72767245/98833307-36944580-2481-11eb-8c58-5bb9d022ca67.png" width="35%">
 
 ### 생성모델링
 - 분포에 가깝게 흉내내는 모델 제작
@@ -68,3 +67,7 @@ Style Image가 주어졌을 때 base Image를 변환하는 모델을 훈련
 - Style Transfer 모델은 두가지<br>
    * **CycleGAN**
    * **Neural Style Transpose**
+   
+#### Reference
+**[미술관에 GAN 딥러닝 실전 프로젝트]을 통해 스터디 진행** <br>
+<img src="https://user-images.githubusercontent.com/72767245/98833307-36944580-2481-11eb-8c58-5bb9d022ca67.png" width="20%">
