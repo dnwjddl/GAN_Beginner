@@ -73,3 +73,94 @@ layer = Bidirectional(GRU(100))
 # 질문-대답 생성기
 - RNN 하나가 text로 부터 대답 후보를 고른다
 - Encoder-Decoder network가 RNN이 선택한 대답 후보 중 하나가 주어졌을 때 적절한 질문을 생성
+- ```첫번째 NETWORK```: '가능성' 있는 대답을 찾을 수 있다
+- ```두번째 NETWORK```: '각각의 대답에 대한 질문 생성
+## 분석
+- 데이터의 열 분석
+
+|열 이름|설명|
+|:-------:|-------------------|
+|story_id|스토리에 대한 고유 식별자|
+|story_text|스토리의 텍스트|
+|question|스토리 텍스트에 대한 질문|
+|answer_token_ranges|스토리 텍스트에서 대답의 토큰 위치|
+|document_tokens|토큰화된 스토리 텍스트|
+|question_input_tokens|토큰화된 질문|
+|question_output_tokens|한 타임스텝 밀린 토큰화된 질문|
+|answer_masks|[max_answer_length, max_document_length] 크기의 이진 마스크 행렬|
+|answer_labels|max_document_length길이의 이진벡터|
+
+
+## 모델
+입력: ```document_tokens```  
+양방향 셀-> ```answer_masks```    
+(손실)```answer_labels```   
+인코더 입력: ```answer_masks```  
+인코더   
+디코더 입력: ```question_input_tokens```  
+디코더   
+(손실) ```question_output_tokens```  
+
+```python
+
+#### 질문-대답 쌍을 생성하기 위한 모델 구조 ####
+
+from keras.layers import Input, Embedding, GRU, Bidirectional, Dense, Lambda
+from keras.models import Model, load_model
+import keras.backend as K
+from qgen.embedding import glove
+
+### 파라미터
+
+VOCAB_SIZE = glove.shape[0] # 9984
+EMBEDDING_DIMENS = glove.shape[1] # 100
+
+GRU_UNITS = 100
+DOC_SIZE = None
+ANSWER_SIZE = None
+Q_SIZE = None
+
+document_tokens = Input(shape = (DOC_SIZE,), name = 'document_tokens')
+
+# 임베딩 층은 GloVe단어 벡터로 초기화
+embedding = Embedding(input_dim = VOCAB_SIZE, output_dim = EMBEDDING_DIMENS, weight = [glove], mask_zero= True, name = 'embedding')
+document_emb = embedding(document_tokens)
+
+# 순환층은 각 타임스텝의 은닉상태를 반환하는 양방향 GRU
+answer_outputs = Bidirectional(GRU(GRU_UNITS, return_sequences = True), name = 'answer_outputs')(document__emb)
+# 출력 Dense 층은 각 타임스텝의 은닉상태에 연결된다
+# 이 층은 두개의 유닛과 소프트 맥스 활성화 함수로 이루어져 있음
+# 각 단어가 대답의 일부분인지(1) 또는 대답의 일부분이 아닌지(0)에 대한 확률 포함
+answer_tags = Dense(2, activation = 'softmax', name = 'answer_tags')(answer_outputs)
+```
+```python
+#### 대답이 주어졌을때 질문을 구성하는 인코더-디코더 네트워크의 모델 ####
+encoder_input_mask = Input(shape = (ANSWER_SIZE, DOC_SIZE), name = "encoder_input_mask")
+encoder_inputs = Lambda(lambda x: K.batch_dot(x[0], x[1]), name = "encoder_inputs")([encoder_input_mask, answer_outputs])
+encoder_cell = GRU(2*GRU_UNITS, name = 'encoder_cell')(encoder_inputs 
+
+decoder_inputs = Input(shape = (Q_SIZE,), name = 'decoder_inputs')
+decoder_emb = embedding(decoder_inputs)
+decoder_emb.trainable = False
+decoder_cell = GRU(2*GRU_UNITS, return_sequences = True, name = 'decoder_cell')
+decoder_states = decoder_cell(decoder_emb, initial_state = [encoder_cell])
+
+decoder_projection = Dense(VOCAB_SIZE, name = 'decoder_projection', activation = 'softmax', use_bias = False)
+decoder_outputs = decoder_projection(decoder_states)
+
+total_model = Model([document_tokens, decoder_inputs, encoder_input_mask], [answer_tags, decoder_outputs])
+answer_model = Model(documents_tokens, [answer_tags])
+decoder_initial_state_model = Model([document_tokens, encoder_input_mask], [encoder_cell])
+
+```
+
+## 예측
+
+## 모델 결과
+- 인코더가 가능한 대답으로부터 문맥을 추출하기 때문에 디코더는 이에 맞는 질문을 생성가능
+- 디코더는 <UNK>태그로 마쳤다
+   - 무엇이 나올지 몰라서가 아니고 어휘사전에 없는 단어를 예측하였기 때문
+- 모델의 정확도와 생성 능력을 향상시키기 위해 인코더-디코더 네트워크를 확장한 것이 많이 있다
+  - Poiter Network: 어휘사전에 있는 단어에만 의존하는 것이 아니라 모댈이 생성된 질문에 포함할 입력 텍스트의 특정 단어를 'pointing' 할 수 있음 (<UNK> 문제 해결)
+  - Attention Mechanism
+
