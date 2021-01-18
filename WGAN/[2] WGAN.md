@@ -28,7 +28,7 @@ WGAN에서는 새로운 loss를 사용하는 판별자 D를 비평자 ```C(Criti
 - TV,KL/JS Divergence는 두 분포가 서로 겹치는 경우에 0, 겹치지 않는 경우에는 무한대 또는 상수로 극단적인 값을 가지게됨
 - 결론적으로 TV, KL/JS Divergence을 loss로 사용한다면 gradient가 제대로 전달되지 않아 학습이 어려워짐
 
-#### Earth Mover's Distance
+### Earth Mover's Distance
 - GAN의 목표인 ```Pdata(x)와 동일하도록 Pmodel(x)을 학습```은 Pdata(x) 와 Pmodel(x) **두 분포 사이의 거리를 줄이는 것**
 - Earth Mover's Distance는 두 분포가 얼마나 다른지를 나타내는 수치
 - Pmodel(x)을 Pdata(x)와 동일하게 만들기 위해 이동해야 하는 거리와 양을 의미
@@ -37,6 +37,9 @@ WGAN에서는 새로운 loss를 사용하는 판별자 D를 비평자 ```C(Criti
 - 분포가 얼마나 멀리 떨어져있든 상관없이 의미있는 gradient(0이 아닌 기울기)를 전달 가능
 ![image](https://user-images.githubusercontent.com/72767245/104936517-fbb60d00-59ef-11eb-8ca3-dd8aa48322df.png)
 
+##### KL/JS divergence 나 TV의 경우 두 분포가 서로 겹치지 않은 경우에는 0, 겹치는 경우에는 무한대 또는 상수로 극단적인 거리의 값을 나타냄
+##### 이는 discriminator와 generator가 분포를 학습할 때 위 세가지 distance 기반으로 학습을 하게 되면 굉장히 어려움을 겪을 것 (초반에는 실제 데이터의 분포와 겹치지 않으므로 무한대 또는 일정한 상수값을 갖다가, 갑자기 0으로 변해버리므로 gradient 가 제대로 전달되지 않음)
+##### 반면, EM의 경우 분포가 겹치던 겹치지 않던 간에 |θ|를 유지하므로, 학습에 사용하기 쉽다는 것
 - **Vanishing Gradient** 해결, **Model collapse** 가능성 감소
 
 ![image](https://user-images.githubusercontent.com/72767245/104936900-7ed76300-59f0-11eb-8640-b5d505ced736.png)
@@ -50,7 +53,8 @@ Earth Mover's Distance 사용
 가치함수 Pr과 Pg사이의 JS Divergence를 최소화할 수 있지만 그렇게 하면 discriminator가 포화되는 vanishing gradients 문제 유발
 
 ### WGAN Loss
-
+**Discriminator는 진짜와 가짜를 판별하기 위해 sigmoid를 사용하고, output은 진짜/가짜에 대한 예측 확률값이다. 반면 Critic은 EM(Earth Mover)distance로부터 얻은 scalar값을 이용
+EM distance는 확률 분포 간의 거리를 측정하는 척도 중 하나인데, 그동안 일반적으로 사용된 척도 KL divergence는 매우 strict 하게 거리를 측정하는 법이라서 continuous 하지 않은 경우가 있고 학습이 어렵다**
 - 1. 와서스테인 손실은 1과 0 대신 **y = 1, y= -1** 사용 
 - 2. 판별자의 마지막 층에서 **시그모이드 활성화 함수를 제거**하여 예측 p가 [0,1]범위에 국한되지 않고 [-무한, 무한]범위의 어떤 숫자도 될 수 있도록 함
 - 3. WGAN의 판별자는 보통 ```Critic(비평자)``` 라고 부름
