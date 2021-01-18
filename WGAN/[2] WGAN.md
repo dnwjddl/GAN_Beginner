@@ -9,7 +9,7 @@
 ## Wassertein Loss
 ### 기존 손실함수
 #### 이진 크로스 엔트로피 함수
-
+![image](https://user-images.githubusercontent.com/72767245/104926533-a2e07780-59e3-11eb-9dec-c48de98b71aa.png)
 - GAN의 판별자D를 훈련하기 위해 진짜 이미지에 대한 예측 ```p = D(x)```와 타깃 ```y = 1```
 - 생성된 이미지에 대한 예측 ```p = D(G(z))```와 타깃 ```y = 0```
 
