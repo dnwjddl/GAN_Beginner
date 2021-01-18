@@ -90,11 +90,48 @@ model.compile(
 ![image](https://user-images.githubusercontent.com/72767245/104942113-5c951380-59f7-11eb-977e-2bac6102a64f.png)  
 함수 위 어느 점에 원뿔을 놓더라도 하얀색 원뿔에 들어가는 영역이 없다  
 
-
+## 가중치 클리핑
 **가중치 클리핑**을 통해 립시츠 제약을 부과할 수 있다  
 WGAN논문에서는 비평가C의 가중치를 [-0.01, 0.01]안에 놓이도록, 훈련배치가 끝난 후 가중치 클리핑을 통해 립시츠 제약을 부과하는 방법을 보임
 
-## 가중치 클리핑
+```python
+def train_critic(x_train, batch_size, clip_threshold):
+  valid = np.ones((batch_size, 1))
+  fake = - np.ones((batch_size, 1))
+  
+  #진짜 이미지로 훈련
+  idx = np.random.randint(0, x_train.shape[0], batch_size)
+  true_imgs = x_train[idx]
+  self.critic.train_on_batch(true_imgs, valid)
+  
+  #생성된 이미지로 훈련
+  noise = np.random.normal(0, 1, (batch_size, self.z_dim))
+  gen_imgs = self.generator.predict(noise)
+  self.critic.train_on_batch(gen_imgs, fake)
+  
+  for l in critic.layers:
+    weights = l.get_weights()
+    weights = [np.clip(w, -clip_threshold, clip_threshold) for w in weights]
+    l.set_weights(weights)
+```
 
 ## WGAN 분석
 ![image](https://user-images.githubusercontent.com/72767245/104939347-a7149100-59f3-11eb-8e6e-e5d7ac449d46.png)
+
+생성자와 판별자의 균형을 맞추기 위하여 WGAN은 생성자를 업데이트 하는 중간에 판별자를 여러 번 훈련하고 수렴에 가깝게 만듦  
+**일반적으로 생성자를 한 번 업데이트할 때 판별자를 다섯 번 업데이트**
+
+```python
+for epoch in range(epochs):
+  for _ in range(5):
+    train_critic(x_train, batch_size = 128, clip_threshold = 0.01)
+  train_generator(batch_size)
+```
+
+# 정리
+## WGAN은 Wasserstein Loss을 사용
+## WGAN은 진짜에는 레이블이 1, 가짜에는 레이블이 -1을 사용하여 훈련
+## WGAN 비평자의 마지막 층은 시그모이드 활성화함수가 필요 하지 않음
+## 매 업데이트 후에 판별자의 가중치를 클리핑
+## 생성자를 업데이트할때마다 판별자를 여러번 훈련
+## 주요 단점: 비평자에서 가중치를 클리핑했기 때문에 학습속도가 크게 감소
