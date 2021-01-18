@@ -149,3 +149,5 @@ for epoch in range(epochs):
         return np.mean(np.abs(img1 - img2))
  ```
 ✔ Upsampling
+- Upsampling: 기존 픽셀 값 사용
+- TransposedConv: 픽셀 사이 공간 zero
