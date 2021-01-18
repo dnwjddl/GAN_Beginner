@@ -43,15 +43,17 @@ discriminator = Model(discriminator_input, discriminator_output)
 
 
 ```python
-generator_input = Input(shape=(self.z_dim,), name = 'generator_input')
+generator_input = Input(shape=(self.z_dim,), name = 'generator_input') #100랜덤 벡터
 x = generator_input
 
-x = Dense(np.prod(self.generator_initial_dense_layer_size)(x)
+x = Dense(np.prod(self.generator_initial_dense_layer_size)(x) #3136 유닛을 가진 Dense Layer
 if self.generator_batch_norm_momentum:
         x = BatchNormalization(momentum = self.generator_batch_norm_momentum)(x)
 x = Activation(self.generator_activation)(x)
+ 
+# 배치 정규화와 ReLU 함수를 거침
 
-x = Reshape(self.generator_initial_dense_layer_size)(x)
+x = Reshape(self.generator_initial_dense_layer_size)(x) # 7x7x64 텐서로 reshape
 
 if self.generator_dropout_rate:
         x = Dropout(rate = self.generator_dropout_rate)(x)
@@ -80,24 +82,70 @@ generator = Model(generator_input, generator_output)
 - 출력은 1인 훈련 배치를 만들어 전체 모델을 훈련 
 - 손실함수는 **이진 크로스 엔트로피 손실**  
 <br>
-- 전체 모델을 훈련할때 생성자의 가중치만 업데이트 되도록 판별자의 가중치를 동결해야 함
+- 전체 모델을 훈련할때 생성자의 가중치만 업데이트 되도록 **판별자의 가중치를 동결**해야 함
 
+### GAN 컴파일
 ```python
-## 판별자 컴파일
+## 판별자 컴파일 ##
+# 이진크로스엔트로피 함수를 사용하여 loss 계산
 self.discriminator.compile(
         optimizer = RMSprop(lr = 0.008),
         loss = 'binary_crossentropy',
         metrics = ['accuracy']
 )
 
-## 생성자를 훈련하기 위해 모델 컴파일
-self.discriminator.trainable = False
+## 생성자 컴파일 ##
+self.discriminator.trainable = False # 판별자 가중치 동결
+
 model_input = Input(shape=(self.z_dim,), name = 'model_input')
 model_output = discriminator(self.generator(model_input))
-self.model = Model(model_input, model_output)
+self.model = Model(model_input, model_output) 
 
-
-
+# 이진 크로스엔트로피 함수를 사용하여 전체 모델을 컴파일
+# 일반적으로 판별자가 생성자보다 강해야되므로 학습률이 판별자 보다 느림
+self.model.compile(
+        optimizer = RMSprop(lr = 0.0004),
+        loss = 'binary_crossentropy',
+        metrics = ['accuracy']
 ```
 
+### GAN 훈련
+- 판별자와 생성자의 교대로 훈련
+
+```python
+def train_discriminator(x_train, batch_size):
+        # discriminator의 정답 값
+        valid = np.ones((batch_size, 1))
+        fake = np.zeros((batch_size, 1))
+        
+        #진짜 이미지로 훈련
+        idx = np.random.randint(0, x_train.shape[0], batch_size) #batch_size 만큼 random index 추출
+        true_imgs = x_train[idx]
+        self.discriminator.train_on_batch(true_imgs, valid)
+        
+        #생성된 이미지로 훈련
+        noise = np.random.normal(0, 1, (batch_size, z_dim)) 
+        ## np.random.normal(0,1은 평균 0, 표준편차 1인 (batch_size, 100) size의 numpy 생성
+        
+        gen_imgs = generator.predict(noise)
+        self.discriminator.train_on_batch(gen_imgs, fake 
+        
+def (batch_size):
+        valid = np.ones((batch_size, 1))
+        
+        noise - np.random.normal(0,1(batch)size, z_dim))
+        self.model.train_on_batch(noise, valid)
+epochs = 2000
+batch_size = 64
+
+for epoch in range(epochs):
+        train_discriminator(x_train, batch_size)
+        train_generator(batch_size)
+```
+ 두이미지 사이의 거리를 재는 ```L1노름```
+ 
+ ```python
+ def l1_compare_images(img1, img2):
+        return np.mean(np.abs(img1 - img2))
+ ```
 ✔ Upsampling
