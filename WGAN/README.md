@@ -10,14 +10,14 @@
 ✔ Upsampling
 - Deconvolution
   - 입력 텐서의 각 pixel 마다 주변에 zero-paddig 후 conv
-- transposed convolution
-  - 일반적인 Convolution 연산
-  - Convolution 연산에 Transpose
 - Unpooling
   - Max pooling할때 Index를 기록해두었다가 해당 Index를 기반으로 pooling을 역으로 수행  
-     
-* Conv2DTranspose  
+- transposed convolution
+  - 일반적인 Convolution 연산
+  - Convolution 연산에 Transpose  
+
 padding에 따라 계산이 조금씩 달라진다  
+
 ```python
 padding = 'valid'
 ```
