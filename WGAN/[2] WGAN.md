@@ -82,10 +82,12 @@ model.compile(
 - 비평가(C)가 1- Lipshiz continuous Function(1-립시츠 연속함수)이어야함
 
 ## 립시츠 제약
-![image](https://user-images.githubusercontent.com/72767245/104939083-51d87f80-59f3-11eb-9736-b721063bf9b3.png)
+![image](https://user-images.githubusercontent.com/72767245/104939083-51d87f80-59f3-11eb-9736-b721063bf9b3.png)  
 **립시츠 함수는 임의의 두 지점의 기울기가 어떤 상숫값 이상 증가하지 않는 함수, 이 상수가 1일때 1-립시츠 함수라고 함**  
 비평가 C 예측간의 차이의 절댓값 / 두 이미지의 픽셀의 평균값 차이의 절댓값  
 1-립시츠 연속함수의 경우: 기울기의 절댓값의 최대는 1이다.  
+
+![image](https://user-images.githubusercontent.com/72767245/104942113-5c951380-59f7-11eb-977e-2bac6102a64f.png)  
 함수 위 어느 점에 원뿔을 놓더라도 하얀색 원뿔에 들어가는 영역이 없다  
 
 
