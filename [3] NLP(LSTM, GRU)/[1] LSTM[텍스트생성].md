@@ -133,11 +133,18 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
 
 ```python
 ## temperature가 0에 가까울수록 샘플링을 더 결정적으로 만듦 (가장 높은 확률을 가진 단어가 선택될 가능성이 높음)
-## temperature 값이 1에 가까우면 모델이 풀력한 확률에 따라 단어가 선택
+## temperature 값이 1에 가까우면 모델이 출력한 확률에 따라 단어가 선택
+
+## preds: LSTM 네트워크의 마지막 Dense 층의 소프트 맥스 활성화 함수가 만든 0~1사이의 확률
+### 이 값을 로그를 취하면 0에 가까울수록 아주 큰 음수
+### 이를 0에 가까운 temperature로 나누고 다시 지수함수로 복원하면 작았던 확률이 더 크게 작아짐
+### 즉, 가장 높았던 확률을 가진 단어가 선택될 가능성이 더 높아짐
+
+###  그 다음 np.random.multinomial 함수를 사용하기 위해 소프트 맥스 함수를 다시 적용하여 확률의 합을 1로 만듦
 
 def sample_with_temp(pred, temperature=1.0):
   #확률 배열에서 인덱스 하나를 샘플링하는 헬퍼 함수 
-  preds = np.asarray(preds).astype('float32')
+  preds = np.asarray(preds).astype('float32') 
   preds = np.log(preds)/temperature
   exp_preds = np.exp(preds)
   preds = exp_preds / np.sum(exp_preds)
