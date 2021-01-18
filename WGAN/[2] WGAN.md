@@ -64,15 +64,30 @@ EM distance는 확률 분포 간의 거리를 측정하는 척도 중 하나인�
 
 ![image](https://user-images.githubusercontent.com/72767245/104938900-1047d480-59f3-11eb-837c-5a06cd0c3e89.png)
 
+
+WGAN은 GAN 보다 더 낮은 학습률을 사용
+
+```python
+def (y_true, y_pred):
+  return -K.mean(y_true * y_pred)
+
+critic.compile(
+  optimizer = RMSprop(lr = 0.00005),loss = wasserstein
+  )
+model.compile(
+  optimizer = RMSprop(lr = 0.00005), loss = wasserstein
+)
+```
 - Earth Mover's Distance의 출력이 [0,1]로 제한되지 않아 loss에 사용하는 것이 적적하다는 것을 알아보았는데, 일반적으로 신경망에서 너무 큰 숫자는 피해야 하기 때문에 Lipshitz 제약이라는 제약조건을 걸어줌
 - 비평가(C)가 1- Lipshiz continuous Function(1-립시츠 연속함수)이어야함
 
 ## 립시츠 제약
 ![image](https://user-images.githubusercontent.com/72767245/104939083-51d87f80-59f3-11eb-9736-b721063bf9b3.png)
-
+**립시츠 함수는 임의의 두 지점의 기울기가 어떤 상숫값 이상 증가하지 않는 함수, 이 상수가 1일때 1-립시츠 함수라고 함**  
 비평가 C 예측간의 차이의 절댓값 / 두 이미지의 픽셀의 평균값 차이의 절댓값  
 1-립시츠 연속함수의 경우: 기울기의 절댓값의 최대는 1이다.  
 함수 위 어느 점에 원뿔을 놓더라도 하얀색 원뿔에 들어가는 영역이 없다  
+
 
 **가중치 클리핑**을 통해 립시츠 제약을 부과할 수 있다  
 WGAN논문에서는 비평가C의 가중치를 [-0.01, 0.01]안에 놓이도록, 훈련배치가 끝난 후 가중치 클리핑을 통해 립시츠 제약을 부과하는 방법을 보임
