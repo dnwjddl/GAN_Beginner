@@ -18,6 +18,13 @@ WGAN에서는 새로운 loss를 사용하는 판별자 D를 비평자 ```C(Criti
 - 생성된 이미지에 대한 예측 ```p = D(G(z))```와 타깃 ```y = 0```
 ![image](https://user-images.githubusercontent.com/72767245/104936492-f3f66880-59ef-11eb-929c-cd03f5bf086e.png)
 
+#### KL-Divergence
+![image](https://user-images.githubusercontent.com/72767245/104936798-5a7b8680-59f0-11eb-8a1a-033b55df85ba.png)
+
+#### JS-Divergence
+![image](https://user-images.githubusercontent.com/72767245/104936822-636c5800-59f0-11eb-826a-2e0ea347d24b.png)
+
+
 #### Earth Mover's Distance
 - GAN의 목표인 ```Pdata(x)와 동일하도록 Pmodel(x)을 학습```은 Pdata(x) 와 Pmodel(x) **두 분포 사이의 거리를 줄이는 것**
 - Earth Mover's Distance는 두 분포가 얼마나 다른지를 나타내는 수치
@@ -29,9 +36,8 @@ WGAN에서는 새로운 loss를 사용하는 판별자 D를 비평자 ```C(Criti
 
 - **Vanishing Gradient** 해결, **Model collapse** 가능성 감소
 
-#### KL-Divergence
+![image](https://user-images.githubusercontent.com/72767245/104936900-7ed76300-59f0-11eb-8640-b5d505ced736.png)
 
-#### JS-Divergence
 
 #### GAN 판별자와 생성자 손실 최소화
 ![image](https://user-images.githubusercontent.com/72767245/104924284-90187380-59e0-11eb-8cb4-b7e638f1577d.png)
