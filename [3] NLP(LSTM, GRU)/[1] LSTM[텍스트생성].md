@@ -132,6 +132,9 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
 - ```temperature 매개변수```를 사용하여 샘플링 과정을 얼마나 결정적으로 만들지 지정 가능
 
 ```python
+## temperature가 0에 가까울수록 샘플링을 더 결정적으로 만듦 (가장 높은 확률을 가진 단어가 선택될 가능성이 높음)
+## temperature 값이 1에 가까우면 모델이 풀력한 확률에 따라 단어가 선택
+
 def sample_with_temp(pred, temperature=1.0):
   #확률 배열에서 인덱스 하나를 샘플링하는 헬퍼 함수 
   preds = np.asarray(preds).astype('float32')
