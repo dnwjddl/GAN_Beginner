@@ -27,3 +27,13 @@ output = (Input-1) * stride + filter
 padding = 'same'
 ```
 output = Input * stride
+
+# WGAN
+- 진동하는 손실
+- 판별자와 생성자의 균형 문제(Vanishing Gradient)
+- 모드 붕괴(Mode Collapse)
+
+Discriminator은 진짜와 가짜를 판별하기 위해 sigmoid를 사용하고, output은 진짜/가짜의 예측 확률값  
+Critic은 EM(Earth Mover) distance로 부터 얻은 scalar 값을 이용(y=0,1이 아닌 -1,1사용)    
+EM distance는 확률 분포간의 거리를 측정하는 척도 < KL divergence/JS divergence : strict하여 continuous 하지 않다 >  
+(ex. KL/JS divergence나 TV의 경우 두 분포가 서로 겹치지 않은 경우에는 0, 겹치면 무한대나 상수로 극단적, 초반에는 실제 데이터의 분포와 겹치지 않으므로 무한대 또는 일정한 상수값을 갖다가, 갑자기 0으로 변하여 gradient가 제대로 전달되지 않음)
