@@ -135,40 +135,60 @@ model.compile(loss='categorical_crossentropy', optimizer=opti)
 ## temperature가 0에 가까울수록 샘플링을 더 결정적으로 만듦 (가장 높은 확률을 가진 단어가 선택될 가능성이 높음)
 ## temperature 값이 1에 가까우면 모델이 출력한 확률에 따라 단어가 선택
 
-## preds: LSTM 네트워크의 마지막 Dense 층의 소프트 맥스 활성화 함수가 만든 0~1사이의 확률
-### 이 값을 로그를 취하면 0에 가까울수록 아주 큰 음수
-### 이를 0에 가까운 temperature로 나누고 다시 지수함수로 복원하면 작았던 확률이 더 크게 작아짐
-### 즉, 가장 높았던 확률을 가진 단어가 선택될 가능성이 더 높아짐
-
-###  그 다음 np.random.multinomial 함수를 사용하기 위해 소프트 맥스 함수를 다시 적용하여 확률의 합을 1로 만듦
-
 def sample_with_temp(pred, temperature=1.0):
-  #확률 배열에서 인덱스 하나를 샘플링하는 헬퍼 함수 
+  #확률 배열에서 인덱스 하나를 샘플링하는 헬퍼 함수
+  
+  # preds: LSTM 네트워크의 마지막 Dense 층의 소프트 맥스 활성화 함수가 만든 0~1사이의 확률
   preds = np.asarray(preds).astype('float32') 
+  # 이 값을 로그 취하면 0에 가까울 수록 아주 큰 음수
+  # 이를 0에 가까운 temperature로 나누고 다시 지수함수로 복원하면 작았던 확률이 더 크게 작아짐
   preds = np.log(preds)/temperature
+  
+  ## 가장 높았던 확률을 가진 단어가 선택될 가능성이 높아진다
+  # np.random.multionmial 함수를 사용하기 위해 소프트 맥스 함수를 다시 적용하여 확률의 합을 1로 만듦
+  
+  # softmax 함수
   exp_preds = np.exp(preds)
   preds = exp_preds / np.sum(exp_preds)
+  
   prods = np.random.multionmial(1, preds, 1)
   return np.argmax(prods)
-  
+```
+```python
+# seed_text: 생성과정을 시작하기 위해 모델에 전달할 단어 시퀀스(공백도 가능)
+# start_story => 문자블럭
 def generate_text(seed_text, next_words, model, max_sequence_len, temp):
   output_text = seed_text
   seed_text = start_story + seed_text
   
   for _ in range(next_words):
-    token_list = tokenizer.texts_to_sequences([seed_text])[0]
-    token_list = token_list[-max_sequence_len:]
+    token_list = tokenizer.texts_to_sequences([seed_text])[0] #단어 토큰의 리스트로 반환
+   
+    # 시퀀스가 길어질수록 다음 단어를 생성하는데 시간이 오래 걸리기 때문에 둔 시퀀스 길이 제한
+    token_list = token_list[-max_sequence_len:] #마지막 max_sequence_len개의 토큰만 유지
     token_list = np.reshape(token_list, (1, max_sequence_len))
     
+    # 모델은 시퀀스의 다음 단어에 대한 확률을 출력
     prods = model.predict(token_list, verbose = 0)[0]
+    # 다음 단어를 출력하기 위해 샘플링 함수에 확률과 temperature 매개변수를 전달
     y_class = sample_with_temp(prods, temperature = temp)
     
     output_word = tokenizer.index_word[y_class] if y_class > 0 else ''
     
+    # 출력 단어가 스토리의 시작 토큰이면 다시 시작
     if output_word == "|":
       break
+    # 그렇지 않으면 새로운 단어를 seed_text에 덧붙이고 다음 생성 과정을 반복
     seed_text += output_word + ' '
     output_text += output_word + ' '
     
  return output_text
 ```
+
+#### 결과
+- temperature = 0.2로 생성한 텍스트가 temperature = 1.0으로 생성한 텍스트보다 덜 모험적이지만 더 논리적이다.
+- temperature가 낮을수록 더 결정적인 샘플링이 되기 때문
+<br><br>
+- 둘 다 스토리가 여러 문장에 걸쳐 잘 이어지지 않음
+  - 단어의 의미를 알지 못하기 때문
+    - 사용자가 다음 시퀀스에 나올 확률이 가장 높은 단어 10개 중에 고르는 방식
