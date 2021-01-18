@@ -37,3 +37,12 @@ Discriminator은 진짜와 가짜를 판별하기 위해 sigmoid를 사용하고
 Critic은 EM(Earth Mover) distance로 부터 얻은 scalar 값을 이용(y=0,1이 아닌 -1,1사용)    
 EM distance는 확률 분포간의 거리를 측정하는 척도 < KL divergence/JS divergence : strict하여 continuous 하지 않다 >  
 (ex. KL/JS divergence나 TV의 경우 두 분포가 서로 겹치지 않은 경우에는 0, 겹치면 무한대나 상수로 극단적, 초반에는 실제 데이터의 분포와 겹치지 않으므로 무한대 또는 일정한 상수값을 갖다가, 갑자기 0으로 변하여 gradient가 제대로 전달되지 않음)
+### WGAN은 Wasserstein Loss 사용
+### WGAN은 진짜에는 레이블 1, 가짜에는 레이블 -1을 사용하여 훈련
+### WGAN 비평자의 마지막 층은 시그모이드 활성화 함수가 필요하지 않음
+### 매 업데이트 후에 판별자의 가중치를 클리핑
+### 생성자를 업데이트할때마다 판별자를 여러번 훈련
+### 주요단점: 비평자에서 가중치를 클리핑했기 때문에 학습속도가 크게 감소
+#### 립시츠 제약을 두기 위한 가중치 클리핑은 좋지 않은 방법
+
+# WGAN-GP
