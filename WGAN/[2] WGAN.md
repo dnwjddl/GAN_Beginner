@@ -11,6 +11,9 @@
 #### 이진 크로스 엔트로피 함수
 GAN의 판별자 D를 훈련하기 위해 진짜 이미지에 대한 예측
 
+
+![image](https://user-images.githubusercontent.com/72767245/104924284-90187380-59e0-11eb-8cb4-b7e638f1577d.png)
+
 #### GAN 판별자 손실 최소화
 
 #### GAN 생성자 손실 최소화
