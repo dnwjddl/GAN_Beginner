@@ -24,6 +24,9 @@ WGAN에서는 새로운 loss를 사용하는 판별자 D를 비평자 ```C(Criti
 #### JS-Divergence
 ![image](https://user-images.githubusercontent.com/72767245/104936822-636c5800-59f0-11eb-826a-2e0ea347d24b.png)
 
+- EM distance(=Wasserstein 거리)의 경우 추정하는 모수에 상관없이 일정한 수식을 가지고 있으나, 다른 경우 모수에 따라 거리가 달라질 뿐만 아니라 그 값이 상수 또는 무한대의 값을 가지게 됨
+- TV,KL/JS Divergence는 두 분포가 서로 겹치는 경우에 0, 겹치지 않는 경우에는 무한대 또는 상수로 극단적인 값을 가지게됨
+- 결론적으로 TV, KL/JS Divergence을 loss로 사용한다면 gradient가 제대로 전달되지 않아 학습이 어려워짐
 
 #### Earth Mover's Distance
 - GAN의 목표인 ```Pdata(x)와 동일하도록 Pmodel(x)을 학습```은 Pdata(x) 와 Pmodel(x) **두 분포 사이의 거리를 줄이는 것**
@@ -40,16 +43,21 @@ WGAN에서는 새로운 loss를 사용하는 판별자 D를 비평자 ```C(Criti
 
 
 #### GAN 판별자와 생성자 손실 최소화
+Earth Mover's Distance 사용
+
 ![image](https://user-images.githubusercontent.com/72767245/104924284-90187380-59e0-11eb-8cb4-b7e638f1577d.png)
 
 가치함수 Pr과 Pg사이의 JS Divergence를 최소화할 수 있지만 그렇게 하면 discriminator가 포화되는 vanishing gradients 문제 유발
 
 ### WGAN Loss
-- 와서스테인 손실은 1과 0 대신 **y = 1, y= -1** 사용 
-- 판별자의 마지막 층에서 시그모이드 활성화 함수를 제거하여 예측 p가 [0,1]범위에 국한되지 않고 [-무한, 무한]범위의 어떤 숫자도 될 수 있도록 함
-- WGAN의 판별자는 보통 비평자 라고 부름
+
+- 1. 와서스테인 손실은 1과 0 대신 **y = 1, y= -1** 사용 
+- 2. 판별자의 마지막 층에서 **시그모이드 활성화 함수를 제거**하여 예측 p가 [0,1]범위에 국한되지 않고 [-무한, 무한]범위의 어떤 숫자도 될 수 있도록 함
+- 3. WGAN의 판별자는 보통 ```Critic(비평자)``` 라고 부름
 
 ### 와서스테인 손실
+![image](https://user-images.githubusercontent.com/72767245/104938656-b6dfa580-59f2-11eb-9474-10476a7bbf0a.png)
+
 
 ### WGAN 비평자 손실 최소화
 
