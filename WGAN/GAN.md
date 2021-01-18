@@ -67,10 +67,37 @@ for i in range(self.n_layers_generator):
                 if self.generator_batch_norm_momentum:
                         x = BatchNormalization(momentum = self.generator_batch_norm_momentum))(x)
                 x = Activation('relu')(x)
-        else:
+        else: 
                 x = Activation('tanh')(x)
+                # 마지막 출력에서 tanh() 활성화함수 적용 [-1, 1]사이 값 반환
 generator_output = x
 generator = Model(generator_input, generator_output)
+# 케라스 모델로 생성자 정의 100인 벡터를 받아 [28,28,1] 크기의 텐서 출력
+```
+# GAN 훈련
+- 훈련세트에서 진짜 샘플을 랜덤하게 선택하고 생성자의 출력을 합쳐서 훈련 세트를 만들어 판별자를 훈련
+- 입력은 랜덤하게 생성한 100차원 잠재공간 벡터
+- 출력은 1인 훈련 배치를 만들어 전체 모델을 훈련 
+- 손실함수는 **이진 크로스 엔트로피 손실**  
+<br>
+- 전체 모델을 훈련할때 생성자의 가중치만 업데이트 되도록 판별자의 가중치를 동결해야 함
+
+```python
+## 판별자 컴파일
+self.discriminator.compile(
+        optimizer = RMSprop(lr = 0.008),
+        loss = 'binary_crossentropy',
+        metrics = ['accuracy']
+)
+
+## 생성자를 훈련하기 위해 모델 컴파일
+self.discriminator.trainable = False
+model_input = Input(shape=(self.z_dim,), name = 'model_input')
+model_output = discriminator(self.generator(model_input))
+self.model = Model(model_input, model_output)
+
+
+
 ```
 
 ✔ Upsampling
