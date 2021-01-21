@@ -155,7 +155,7 @@ decoder_initial_state_model = Model([document_tokens, encoder_input_mask], [enco
 ```
 
 ## 예측
-
+- 예측을 할때는 Teacher Forcing을 해주지 않는다
 ## 모델 결과
 - 인코더가 가능한 대답으로부터 문맥을 추출하기 때문에 디코더는 이에 맞는 질문을 생성가능
 - 디코더는 <UNK>태그로 마쳤다
