@@ -119,7 +119,8 @@ def train_critic(x_train, batch_size, clip_threshold):
 ![image](https://user-images.githubusercontent.com/72767245/104939347-a7149100-59f3-11eb-8e6e-e5d7ac449d46.png)
 
 생성자와 판별자의 균형을 맞추기 위하여 WGAN은 생성자를 업데이트 하는 중간에 판별자를 여러 번 훈련하고 수렴에 가깝게 만듦  
-**일반적으로 생성자를 한 번 업데이트할 때 판별자를 다섯 번 업데이트**
+**일반적으로 생성자를 한 번 업데이트할 때 판별자를 다섯 번 업데이트**   
+적대적관계이기 떄문에 판별자를 강하게 만들어주고 생성자도 뒤따라서 강하게 훈련
 
 ```python
 for epoch in range(epochs):
