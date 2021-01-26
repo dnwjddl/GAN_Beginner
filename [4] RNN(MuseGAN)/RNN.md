@@ -106,7 +106,7 @@ for element in original_score.flat:
 - 각 은닉상태 h_j(순환 층의 유닛 개수와 길이가 동일한 벡터)가 정렬 함수을 통과하여 스칼라 값 e_J을 출력, 이 함수는 하나의 출력 유닛과 tanh 활성화 함수를 가진 단순한 완전 연결 층
 - 그 다음 벡터 e_1, e_2,,, e_n에 소프트맥스 함수가 적용되어 가중치 벡터 알파1, ... 알파n을 만듦
 - 마지막으로 각 은닉 상태 벡터 h_j 와 해당되는 가중치 알파j을 곱하여 더한 후 문맥 벡터 c를 만듦(따라서 c는 은닉 상태 벡터와 길이가 동일) 
-![image](https://user-images.githubusercontent.com/72767245/105804022-1553e780-5fe2-11eb-83c8-153d2229bd70.png){: width="300" height="300"}
+<img src = "https://user-images.githubusercontent.com/72767245/105804022-1553e780-5fe2-11eb-83c8-153d2229bd70.png" width = 40%>
 
 ```python
 notes_in = Input(shape = (None,))
