@@ -30,10 +30,30 @@ original_score.show('text')
 - 미디 파일은 악기, 박자, 키(key) 같은 메타데이터로 시작
 - 이 작업에서는 이런 정보를 사용하지 않는다
 - `{4.0} <music21.chord.Chord G2 D3 B3>` `{5.0} <music21.chord.Chord B3>`
-  - 이 음표는 음악의 4번째 박자(0부터 시작)에서 시작하고
-  - 다음 음표가 5번째 박자에서 시작하므로 1박자 길이를 가짐
+  - 이 음표는 음악의 4번째 박자(0부터 시작)에서 시작하고 다음 음표가 5번째 박자에서 시작하므로 1박자 길이를 가짐
   - 낮은 G, D, B 코드로 구성되어 있음 
 - `{6.0} <music21.chord.Chord G3>` `{6.25} <music21.chord.Chord D3>`
   - 이 음표는 6번째 박자부터 시작하고 다음음표가 6.25 부터 시작하므로 1/4박자 길이를 가지고 G 코드 하나로 구성
 - `{7.75} <music21.chord.Chord C4>` `{8.0} <music21.chord.Chord D4>`
   - 이 음표는 7.75번째 박자로부터 시작하고 1/4박자 길이를 가진다. 높은 C 코드 하나로 구성
+  
+```python
+### 데이터 추출 ###
+notes = []
+durations = [] #음이 지속되는 길이(박자)
+
+for element in original_score.flat:
+  if isinstance(element, chord.Chord):
+    notes.append('.'.join(n.nameWithOctave for n in element.pitches))
+    durations.append(element.duragion.quarterLength)
+    
+  if isinstance(element, note.Note):
+    if element.isRest:
+      notes.append(str(element.name))
+      durations.append(element.duration.quarterLength)
+    else:
+      notes.append(str(element.nameWithOctave))
+      durations.append(element.duration.quarterLength)
+```
+- 단어는 하나의 pitch (높 낮이, 음)
+- pitch에 시퀀스가 주어지면 다음 pitch를 예측하는 모델을 만들어야 함
