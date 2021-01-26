@@ -116,37 +116,38 @@ notes_in = Input(shape = (None,))
 durations_in = Input(shape = (None,))
 
 # Embedding층은 음표 이름과 박자에 대한 정숫값을 벡터로 변환
-x1 = Embedding(n_notes, embed_size)(notes_in)
-x2 = Embedding(n_duration, embed_size)(durations_in)
+x1 = Embedding(n_notes, embed_size)(notes_in) # (None, None, 100)
+x2 = Embedding(n_duration, embed_size)(durations_in) # (None, None, 100)
 
 # 이 벡터는 하나의 긴 벡터로 연결되어 순환층의 입력으로 사용
-x = Concatenate()([x1,x2])
+x = Concatenate()([x1,x2])  # (None, None, 200)
 
 # 두개의 적층 LSTM 층을 사용
 # 마지막 은닉상태만이 아니라 전체 은닉 상태의 시퀀스를 다음 층에 전달하기 위해 return_sequences 매개변수는 True
-x = LSTM(rnn_units, return_sequences = True)(x)
-x = LSTM(rnn_units, return_sequences = True)(x)
+x = LSTM(rnn_units, return_sequences = True)(x) # (None, None, 256)
+x = LSTM(rnn_units, return_sequences = True)(x) # (None, None, 256)
 
 # 정렬 함수는 하나의 출력 유닛과 tanh 활성화 함수를 가진 단순한 Dense 층
 # Reshape 층을 사용해 출력을 하나의 벡터로 펼침 
 # 이 벡터의 길이는 입력 시퀀스의 길이(seq_len)과 동일
-e = Dense(1, activation = 'tanh')(x)
-e = Reshape([-1])(e)
+e = Dense(1, activation = 'tanh')(x)  # (None, None, 1)
+# 배치 차원을 제외한 나머지 크기를 바꾸어줌
+e = Reshape([-1])(e) # (None, None)
 
 # 정렬된 값에 소프트맥스 함수를 적용하여 가중치를 계산
-alpha = Activation('softmax')(e)
+alpha = Activation('softmax')(e)  # (None, None)
 
 # 은닉 상태의 가중치 합을 얻기 위해 RepeatVector층으로 이 가중치를 rnn_units 번 복사해 [rnn_units, seq_len] 크기의 행렬 만듦 
 # permute : 전치 [seq_len, rnn_units]
-c = Permute([2,1])(RepeatVector(rnn_units)(alpha)) 
+c = Permute([2,1])(RepeatVector(rnn_units)(alpha))  # (None, 256, None) > (None, None, 256)
 # 이 행렬과 마지막 LSTM 층의 은닉상태와 원소별 곱셈을 수행 , 크기: [seq_len, rnn_units]
-c = Multiply()([x,c])
+c = Multiply()([x,c]) # [ (None, None, 256), (None, None, 256) ] > (None, None, 256)
 # Lambda 층을 사용하여 seq_len축을 따라 더하여 rnn_units 길이의 문맥벡터 만듦
-c = Lambda(lambda xin: K.sum(xin, axis = 1), output_shape = (rnn_units, ))(c)
+c = Lambda(lambda xin: K.sum(xin, axis = 1), output_shape = (rnn_units, ))(c) # (None, 256)
 
 # 이 네트워크의 출력은 두 개, 하나는 다음 음표 이름, 하나는 다음 음표의 길이
-notes_out = Dense(n_notes, activation = 'softmax', name = 'pitch')(c)
-durations_out = Dense(n_durations, activation = 'softmax', name = 'duration')(c)
+notes_out = Dense(n_notes, activation = 'softmax', name = 'pitch')(c) # (None, 387)
+durations_out = Dense(n_durations, activation = 'softmax', name = 'duration')(c) # (None, 18)
 
 # 최종 모델은 이전 음표 이름과 박자를 입력으로 받고 다음 음표 이름과 박자에 대한 분포를 출력
 model = Model([notes_in, durations_in], [notes_out, durations_out])
