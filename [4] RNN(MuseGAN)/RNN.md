@@ -144,13 +144,17 @@ c = Multiply()([x,c])
 # Lambda 층을 사용하여 seq_len축을 따라 더하여 rnn_units 길이의 문맥벡터 만듦
 c = Lambda(lambda xin: K.sum(xin, axis = 1), output_shape = (rnn_units, ))(c)
 
+# 이 네트워크의 출력은 두 개, 하나는 다음 음표 이름, 하나는 다음 음표의 길이
 notes_out = Dense(n_notes, activation = 'softmax', name = 'pitch')(c)
 durations_out = Dense(n_durations, activation = 'softmax', name = 'duration')(c)
 
+# 최종 모델은 이전 음표 이름과 박자를 입력으로 받고 다음 음표 이름과 박자에 대한 분포를 출력
 model = Model([notes_in, durations_in], [notes_out, durations_out])
 
+# 네트워크가 순환 층의 은닉 상태에 어떻게 가중치를 부여하는지 알아보기 위해 alpha 벡터를 출력하는 모델을 만듦
 att_model  = Model([notes_in, durations_in], alpha)
 
+# 음표 이름과 박자 출력은 모두 다중 분류 문제이므로 categorical_crossentropy을 사용하여 모델을 컴파일
 opti= RMSprop(lr = 0.001)
 model.compile(loss = ['categorical_crossentropy', 'categorical_crossentropy'], optimizer = opti)
 ```
