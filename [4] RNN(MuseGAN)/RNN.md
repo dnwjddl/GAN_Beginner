@@ -161,3 +161,5 @@ model.compile(loss = ['categorical_crossentropy', 'categorical_crossentropy'], o
 ```
 
 ### Attention을 사용한 RNN 분석
+
+### 인코더-디코더 네트워크의 Attention
