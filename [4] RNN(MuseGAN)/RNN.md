@@ -89,12 +89,42 @@ for element in original_score.flat:
 ##### `Attention Mechanism`
 - 어텐션 메커니즘에서는 모델인 인코더 RNN의 마지막 은닉 상태만 문맥 벡터로 사용하지 않고 인코더 RNN의 이전 타임스텝에 있는 ```은닉 상태의 가중치 합```으로 문맥 벡터를 만듦
 - ```어텐션 메커니즘```은 인코더의 이전 은닉상태와 디코더의 현재 은닉상태를 문맥 벡터 생성을 위한 덧셈 가중치로 변환하는 일련의 층  
-**순서**  
+  
 1. 간단한 순환 층 뒤에 어텐션을 추가하는 방법    
 2. 인코더-디코더 네트워크로 확장  
 3. 음표 하나가 아니라 전체 음표 시퀀스 예측  
 
-
 ### Keras로 Attention Mechanism 생성
+```python
+notes_in = Input(shape = (None,))
+durations_in = Input(shape = (None,))
+
+x1 = Embedding(n_notes, embed_size)(notes_in)
+x2 = Embedding(n_duration, embed_size)(durations_in)
+
+x = Concatenate()([x1,x2])
+
+x = LSTM(rnn_units, return_sequences = True)(x)
+x = LSTM(rnn_units, return_sequences = True)(x)
+
+e = Dense(1, activation = 'tanh')(x)
+e = Reshape([-1])(e)
+
+alpha = Activation('softmax')(e)
+
+c = Permute([2,1])(RepeatVector(rnn_units)(alpha))
+c = Multiply()([x,c])
+c = Lambda(lambda xin: K.sum(xin, axis = 1), output_shape = (rnn_units, ))(c)
+
+notes_out = Dense(n_notes, activation = 'softmax', name = 'pitch')(c)
+durations_out = Dense(n_durations, activation = 'softmax', name = 'duration')(c)
+
+model = Model([notes_in, durations_in], [notes_out, durations_out])
+
+att_model  = Model([notes_in, durations_in], alpha)
+
+opti= RMSprop(lr = 0.001)
+model.compile(loss = ['categorical_crossentropy', 'categorical_crossentropy'], optimizer = opti)
+```
 
 ### Attention을 사용한 RNN 분석
