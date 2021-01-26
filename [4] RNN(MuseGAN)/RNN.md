@@ -36,7 +36,14 @@ original_score.show('text')
   - 이 음표는 6번째 박자부터 시작하고 다음음표가 6.25 부터 시작하므로 1/4박자 길이를 가지고 G 코드 하나로 구성
 - `{7.75} <music21.chord.Chord C4>` `{8.0} <music21.chord.Chord D4>`
   - 이 음표는 7.75번째 박자로부터 시작하고 1/4박자 길이를 가진다. 높은 C 코드 하나로 구성
-  
+
+✔ 데이터 추출  
+악보를 순회하며 각 음표(와 쉼표)의 피치와 박자를 두 개의 리스트로 추출  
+코드 전체는 하나의 문자열로 저장되고 코드의 개별 음표는 점으로 구분한다  
+- 각 음표의 이름 뒤에 있는 숫자는 음표가 속한 옥타브를 지칭  
+  - 동일한 음표 이름(A~G)이 반복되기 때문에 고유한 피치를 구분하기 위해 필요  
+    - G2는 G3보다 한 옥타브 낮음
+
 ```python
 ### 데이터 추출 ###
 notes = []
@@ -55,5 +62,25 @@ for element in original_score.flat:
       notes.append(str(element.nameWithOctave))
       durations.append(element.duration.quarterLength)
 ```
-- 단어는 하나의 pitch (높 낮이, 음)
-- pitch에 시퀀스가 주어지면 다음 pitch를 예측하는 모델을 만들어야 함
+✔ isinstance함수  
+인스턴스가 특정 클래스/데이터 타입과 일치한지 알아봐주는 함수  
+<br>
+- 단어는 하나의 ```pitch``` (높 낮이, 음)
+- ```pitch```에 시퀀스가 주어지면 다음 pitch를 예측하는 모델을 만들어야 함
+## 첫번째 음악생성 RNN
+- 전처리: 피치&박자를 정숫값으로 변환
+- 데이터를 32개의 음표씩 나누어 훈련세트 만듦
+- 타깃은 시퀀스에 있는 (원-핫 인코딩된) 다음 피치와 박스
+`pitch input`: [386, 77, 340...]  
+`duration input`: [0,3,8,3,3,...]  
+`pitch output`: [0.,0.,0.,0.,0.,...]    
+`duration output`: [0.,0.,1.,0.,...]  
+- 복잡한 순차 생성 모델에서 필수가 된 어텐션 메커니즘
+- 이 알고리즘은 순환층이나 합성곱 층이 필요하지 않고 완전히 어텐션만으로 구성된 ```Transformer 모델```을 탄생
+
+
+### Attention
+
+### Keras로 Attention Mechanism 생성
+
+### Attention을 사용한 RNN 분석
