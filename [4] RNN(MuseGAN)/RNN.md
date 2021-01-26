@@ -97,7 +97,11 @@ for element in original_score.flat:
 3. 음표 하나가 아니라 전체 음표 시퀀스 예측  
 
 ### Keras로 Attention Mechanism 생성
+#### 기존 RNN
 ![https://user-images.githubusercontent.com/72767245/105803721-631c2000-5fe1-11eb-9814-68f03f7ee95b.png](https://user-images.githubusercontent.com/72767245/105803721-631c2000-5fe1-11eb-9814-68f03f7ee95b.png)
+
+#### Attention Mechanism with RNN
+![image](https://user-images.githubusercontent.com/72767245/105803730-657e7a00-5fe1-11eb-9eb7-e6491d02d68a.png)
 
 ```python
 notes_in = Input(shape = (None,))
