@@ -101,7 +101,8 @@ for element in original_score.flat:
 ![https://user-images.githubusercontent.com/72767245/105803721-631c2000-5fe1-11eb-9814-68f03f7ee95b.png](https://user-images.githubusercontent.com/72767245/105803721-631c2000-5fe1-11eb-9814-68f03f7ee95b.png)
 
 #### Attention Mechanism with RNN
-![image](https://user-images.githubusercontent.com/72767245/105803730-657e7a00-5fe1-11eb-9eb7-e6491d02d68a.png)
+![image](https://user-images.githubusercontent.com/72767245/105805793-1edf4e80-5fe6-11eb-95a1-7550fc9dca4c.png)
+
 
 - 각 은닉상태 h_j(순환 층의 유닛 개수와 길이가 동일한 벡터)가 정렬 함수을 통과하여 스칼라 값 e_J을 출력, 이 함수는 하나의 출력 유닛과 tanh 활성화 함수를 가진 단순한 완전 연결 층
 - 그 다음 벡터 e_1, e_2,,, e_n에 소프트맥스 함수가 적용되어 가중치 벡터 알파1, ... 알파n을 만듦
