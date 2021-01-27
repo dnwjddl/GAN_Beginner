@@ -29,8 +29,22 @@ original_score.show('text')
 - batch_size: 32
 - Target
   - 시퀀스에 있는 (one-hot encoding된) 다음 피치와 박자
-### Attention
+### Attention Mechanism
+#### ```AutoEncoder```
+- z(문맥을 담은 벡터)/ 병목될 가능성이 있음
+- 긴 문장의 시작 부분에 정보는 문맥 벡터에 도달할 때 희석될 수 있음
 
-  
-  
+#### ```Attention Mechanism```
+- Attention Mechanism에서는 인코더 RNN의 마지막 은닉상태만 문맥 벡터로 사용하지않고 인코더 RNN의 이전 타임 스텝에 있는 은닉상태의 가중치 합으로 문맥벡터 생성
+- Attention Mechanism은 인코더의 이전 은닉상태와 현재 은닉상태를 문맥 벡터 생성을 위한 덧셈 가중치로 변환하는 일련의 층
+
+### Attention Mechanism 생성
+![image](https://user-images.githubusercontent.com/72767245/105805793-1edf4e80-5fe6-11eb-95a1-7550fc9dca4c.png)
+
+
+
+### Attention을 사용한 RNN 분석
+
+### Encoder-Decoder 네트워크의 어텐션
+### 다중선율 음악 생성
   
