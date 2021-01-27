@@ -41,9 +41,10 @@ original_score.show('text')
 ### Attention Mechanism 생성
 ![image](https://user-images.githubusercontent.com/72767245/105805793-1edf4e80-5fe6-11eb-95a1-7550fc9dca4c.png)
 
-
+![image](https://user-images.githubusercontent.com/72767245/106029450-724dbb80-6110-11eb-828a-ab74bbafbe93.png)
 
 ### Attention을 사용한 RNN 분석
+
 
 ### Encoder-Decoder 네트워크의 어텐션
 ### 다중선율 음악 생성
