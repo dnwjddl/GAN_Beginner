@@ -74,10 +74,10 @@ for element in original_score.flat:
 - 데이터를 32개의 음표씩 나누어 훈련세트 만듦
 - 타깃은 시퀀스에 있는 (원-핫 인코딩된) 다음 피치와 박스  
 <br>
-```pitch input```: [386, 77, 340...] <br> 
-```duration input```: [0,3,8,3,3,...]  <br>
-```pitch output```: [0.,0.,0.,0.,0.,...]   <br> 
-```duration output```: [0.,0.,1.,0.,...]  <br>
+```pitch input``` : [386, 77, 340...] <br> 
+```duration input``` : [0,3,8,3,3,...]  <br>
+```pitch output``` : [0.,0.,0.,0.,0.,...]   <br> 
+```duration output``` : [0.,0.,1.,0.,...]  <br>
 <br>
 - 복잡한 순차 생성 모델에서 필수가 된 어텐션 메커니즘
 - 이 알고리즘은 순환층이나 합성곱 층이 필요하지 않고 완전히 어텐션만으로 구성된 ```Transformer 모델```을 탄생
