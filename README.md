@@ -1,4 +1,4 @@
-# GAN_Beginner 
+# GAN_Beginner  
 DCGAN -> Wasserstein GAN(WGAN) -> Conditional GAN (cGAN) [sGAN, ACGAN] -> 
 
 ![image](https://user-images.githubusercontent.com/72767245/104844851-d228b300-5915-11eb-9dba-658b1013e53f.png)
